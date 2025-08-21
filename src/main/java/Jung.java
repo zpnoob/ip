@@ -1,16 +1,17 @@
 import java.util.Scanner;
 
 public class Jung {
+
+    //given that there is no more than 100 task so can use String[100]
+    private static Task[] tasks = new Task[100];
+    private static int taskCount =  0;
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         //scans in any input by user
         System.out.println("Hello! I'm Jung.");
         System.out.println("I don't really want to help but what can I do for you today?");
         //up till this point nothing should be changed here anymore
-
-        //given that there is no more than 100 task so can use String[100]
-        Task[] tasks = new Task[100];
-        int taskCount =  0;
 
         while (true) {
             String input = scanner.nextLine();
@@ -42,12 +43,43 @@ public class Jung {
                     System.out.println("I've marked this task as not done yet.");
                     System.out.println(tasks[index]);
                 }
+            } else if (input.startsWith("todo ")) {
+                String desc = input.substring(5).trim();
+                addTask(new ToDo(desc));
+            } else if (input.startsWith("deadline ")) {
+                //format: "deadline desc /by "
+                int byIndex = input.indexOf("/by");
+                if (byIndex != -1) {
+                    String desc = input.substring(9, byIndex).trim();
+                    String by = input.substring(byIndex + 3).trim();
+                    addTask(new Deadline(desc, by));
+                }
+            } else if (input.startsWith("event ")) {
+                //format: "event desc /from start /to end"
+                int fromIndex = input.indexOf("/from");
+                int toIndex = input.indexOf("/to");
+                if (fromIndex != -1 && toIndex != -1 && fromIndex < toIndex) {
+                    //retrieving the relevant info from user input
+                    String desc = input.substring(6, fromIndex).trim();
+                    String from = input.substring(fromIndex + 5, toIndex).trim();
+                    String to = input.substring(toIndex + 3).trim();
+                    addTask(new Event(desc, from, to));
+                }
             } else {
-                // keep adding in tasks otherwise
-                tasks[taskCount] = new Task(input);
-                taskCount++;
-                System.out.println("added: " + input);
+                System.out.println("Invalid.");
             }
+        }
+    }
+
+    private static void addTask(Task task) {
+        if (taskCount < tasks.length) {
+            tasks[taskCount] = task;
+            taskCount++;
+            System.out.println("Okay. I've added this task:");
+            System.out.println(task);
+            System.out.println("You now have " + taskCount + " tasks in the list.");
+        } else {
+            System.out.println("Task list full. Cannot add any more tasks.");
         }
     }
 }
