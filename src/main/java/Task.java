@@ -1,10 +1,13 @@
 public abstract class Task {
-    protected String description;
-    protected boolean isDone;
+    private String description;
+    private boolean isDone;
+    private char taskSymbol;
+    //this field
 
-    public Task(String description) {
+    public Task(String description, char taskSymbol) {
         this.description = description;
         this.isDone = false;
+        this.taskSymbol = taskSymbol;
     }
 
     public String getStatusIcon() {
@@ -21,13 +24,20 @@ public abstract class Task {
     }
 
     public boolean isDone() {
-        return isDone;
+        return this.isDone;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public char getTaskSymbol() {
+        return this.taskSymbol;
     }
 
     //need to add a toString to represent [X] or [ ]
     @Override
     public String toString() {
-        return "[" + getStatusIcon() + "] " + description;
+        return "[" + getTaskSymbol() + "][" + getStatusIcon() + "] " + description;
     }
-
 }
