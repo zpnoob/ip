@@ -24,9 +24,9 @@ Here are the tasks in your list:
 2. [D][ ] return book (by: Sunday)
 3. [E][ ] meeting (from: Mon 2pm to: 4pm)
 
-Oops! Mark requires a task number. Example mark 1
+Oops! Mark command requires a number. Eg: mark 1
 
-Oops! Invalid task number. Please enter a valid number.
+Oops! invalid task number, please enter a valid number.
 
 Lame, this task is marked as done.
 [T][X] read book
@@ -54,5 +54,15 @@ Here are the tasks in your list:
 1. [T][X] read book
 2. [D][ ] return book (by: Sunday)
 3. [E][X] meeting (from: Mon 2pm to: 4pm)
+
+Oops! Delete command requires a task number. Eg: delete 1
+
+Okay. I've removed this task:
+[T][X] read book
+Now you have 2 tasks in the list.
+
+Here are the tasks in your list:
+1. [D][ ] return book (by: Sunday)
+2. [E][X] meeting (from: Mon 2pm to: 4pm)
 
 Bye. I hope I never see you again..
