@@ -36,8 +36,8 @@ public class Jung {
                         //item that you add to the list if start from i = 1
                     }
                     System.out.println();
-                } else if (input.startsWith("mark ")) {
-                    String numberStr = input.substring(5).trim();
+                } else if (input.startsWith("mark")) {
+                    String numberStr = input.substring(4).trim();
                     if (numberStr.isEmpty()) {
                         throw new JungException("Mark requires a task number. Example mark 1");
                     }
@@ -51,8 +51,8 @@ public class Jung {
                     System.out.println("Lame, this task is marked as done.");
                     System.out.println(tasks[index]);
                     System.out.println();
-                } else if (input.startsWith("unmark ")) {
-                    String numberStr = input.substring(7).trim();
+                } else if (input.startsWith("unmark")) {
+                    String numberStr = input.substring(6).trim();
                     if (numberStr.isEmpty()) {
                         throw new JungException("unmark requires a task number. Example: unmark 1");
                     }
@@ -102,6 +102,7 @@ public class Jung {
                 }
             } catch (JungException e) {
                 System.out.println("Oops! " + e.getMessage());
+                System.out.println();
             }
         }
     }
