@@ -28,22 +28,44 @@ public class Jung {
                     break;
                 } else if (input.equalsIgnoreCase("list")) {
                     tasks.listTasks();
-                } else if (input.startsWith("delete ")) {
-                    int index = parseIndexFromCommand(input, 7);
+                }
+                //delete command
+                else if (input.startsWith("delete")) {
+                    String argument = input.length() > 6 ? input.substring(6).trim() : "";
+                    if (argument.isEmpty()) {
+                        throw new JungException("Delete command requires a task number. Eg: delete 1");
+                    }
+                    int index = parseIndexFromCommand(argument);
                     tasks.deleteTask(index);
-                } else if (input.startsWith("mark ")) {
-                    int index = parseIndexFromCommand(input, 5);
+                }
+                //mark command
+                else if (input.toLowerCase().startsWith("mark")) {
+                    String argument = input.length() > 4 ? input.substring(4).trim() : "";
+                    if(argument.isEmpty()) {
+                        throw new JungException("Mark command requires a number. Eg: mark 1");
+                    }
+                    int index = parseIndexFromCommand(argument);
                     tasks.markTask(index);
-                } else if (input.startsWith("unmark ")) {
-                    int index = parseIndexFromCommand(input, 7);
+                }
+                //unmark command
+                else if (input.toLowerCase().startsWith("unmark")) {
+                    String argument = input.length() > 6 ? input.substring(6).trim() : "";
+                    if(argument.isEmpty()) {
+                        throw new JungException("Unmark command requires a number. Eg: unmark 1");
+                    }
+                    int index = parseIndexFromCommand(argument);
                     tasks.unmarkTask(index);
-                } else if (input.startsWith("todo")) {
+                }
+                //todo command
+                else if (input.toLowerCase().startsWith("todo")) {
                     String desc = input.length() > 4 ? input.substring(4).trim() : "";
                     if (desc.isEmpty()) {
                         throw new JungException("The description of a todo cannot be empty. Try: todo [description]");
                     }
                     tasks.addTask(new ToDo(desc));
-                } else if (input.startsWith("deadline")) {
+                }
+                //deadline command
+                else if (input.toLowerCase().startsWith("deadline")) {
                     int byIndex = input.indexOf("/by");
                     if (byIndex == -1) {
                         throw new JungException("Deadline task requires a '/by' date/time. Format: deadline [desc] /by [datetime]");
@@ -54,7 +76,9 @@ public class Jung {
                         throw new JungException("Deadline description or date/time cannot be empty.");
                     }
                     tasks.addTask(new Deadline(desc, by));
-                } else if (input.startsWith("event")) {
+                }
+                //event command
+                else if (input.toLowerCase().startsWith("event")) {
                     int fromIndex = input.indexOf("/from");
                     int toIndex = input.indexOf("/to");
                     if (fromIndex == -1 || toIndex == -1 || fromIndex > toIndex) {
@@ -78,15 +102,15 @@ public class Jung {
         }
     }
 
-    private static int parseIndexFromCommand(String input, int commandLen) throws JungException {
-        String numberStr = input.substring(commandLen).trim();
-        if (numberStr.isEmpty()) {
-            throw new JungException("Command requires a task number.");
-        }
+    private static int parseIndexFromCommand(String numberStr) throws JungException {
         try {
-            return Integer.parseInt(numberStr) - 1;
+            int index = Integer.parseInt(numberStr) - 1;
+            if (index < 0) {
+                throw new JungException("Task number must be a positive integer.");
+            }
+            return index;
         } catch (NumberFormatException e) {
-            throw new JungException("Invalid number for task. Please input a valid number.");
+            throw new JungException("Invalid number format for task number.");
         }
     }
 }
