@@ -29,6 +29,7 @@ public class Jung {
                 } else if (input.equalsIgnoreCase("list")) {
                     tasks.listTasks();
                 }
+
                 //delete command
                 else if (input.startsWith("delete")) {
                     String argument = input.length() > 6 ? input.substring(6).trim() : "";
@@ -38,6 +39,7 @@ public class Jung {
                     int index = parseIndexFromCommand(argument);
                     tasks.deleteTask(index);
                 }
+
                 //mark command
                 else if (input.toLowerCase().startsWith("mark")) {
                     String argument = input.length() > 4 ? input.substring(4).trim() : "";
@@ -47,6 +49,7 @@ public class Jung {
                     int index = parseIndexFromCommand(argument);
                     tasks.markTask(index);
                 }
+
                 //unmark command
                 else if (input.toLowerCase().startsWith("unmark")) {
                     String argument = input.length() > 6 ? input.substring(6).trim() : "";
@@ -56,6 +59,7 @@ public class Jung {
                     int index = parseIndexFromCommand(argument);
                     tasks.unmarkTask(index);
                 }
+
                 //todo command
                 else if (input.toLowerCase().startsWith("todo")) {
                     String desc = input.length() > 4 ? input.substring(4).trim() : "";
@@ -64,6 +68,7 @@ public class Jung {
                     }
                     tasks.addTask(new ToDo(desc));
                 }
+
                 //deadline command
                 else if (input.toLowerCase().startsWith("deadline")) {
                     int byIndex = input.indexOf("/by");
@@ -77,6 +82,7 @@ public class Jung {
                     }
                     tasks.addTask(new Deadline(desc, by));
                 }
+
                 //event command
                 else if (input.toLowerCase().startsWith("event")) {
                     int fromIndex = input.indexOf("/from");
@@ -91,14 +97,16 @@ public class Jung {
                         throw new JungException("Event description, start, and end date/time cannot be empty.");
                     }
                     tasks.addTask(new Event(desc, from, to));
-                } else {
+                }
+
+                //invalid commands
+                else {
                     throw new JungException("Sorry, I don't recognise that command. Please try again.");
                 }
             } catch (JungException e) {
                 System.out.println("Oops! " + e.getMessage());
                 System.out.println();
             }
-
         }
     }
 

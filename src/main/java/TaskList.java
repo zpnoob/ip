@@ -52,13 +52,9 @@ public class TaskList {
         System.out.println();
     }
 
-    public int getSize() {
-        return tasks.size();
-    }
-
     private void validateIndex(int index) throws JungException {
         if (index < 0 || index >= tasks.size()) {
-            throw new JungException("invalid task number, please enter a valid number.")
+            throw new JungException("invalid task number, please enter a valid number.");
         }
     }
 }
