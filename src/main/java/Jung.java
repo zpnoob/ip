@@ -11,6 +11,7 @@ public class Jung {
         //scans in any input by user
         System.out.println("Hello! I'm Jung.");
         System.out.println("I don't really want to help but what can I do for you today?");
+        System.out.println(); //blank line
         //up till this point nothing should be changed here anymore
 
         while (true) {
@@ -27,6 +28,7 @@ public class Jung {
                     //must start from i = 0 oops because otherwise, when u run it starts from the 2nd
                     //item that you add to the list if start from i = 1
                 }
+                System.out.println();
             } else if (input.startsWith("mark ")) {
                 int index = Integer.parseInt(input.substring(5).trim()) - 1;
                 //get the substring starting from char at index 5 till end, then trim away
@@ -35,6 +37,7 @@ public class Jung {
                     tasks[index].markAsDone();
                     System.out.println("Lame, this task is marked as done.");
                     System.out.println(tasks[index]);
+                    System.out.println();
                 }
             } else if (input.startsWith("unmark ")) {
                 int index = Integer.parseInt(input.substring(7).trim()) - 1;
@@ -42,6 +45,7 @@ public class Jung {
                     tasks[index].markAsNotDone();
                     System.out.println("I've marked this task as not done yet.");
                     System.out.println(tasks[index]);
+                    System.out.println();
                 }
             } else if (input.startsWith("todo ")) {
                 String desc = input.substring(5).trim();
@@ -78,6 +82,7 @@ public class Jung {
             System.out.println("Okay. I've added this task:");
             System.out.println(task);
             System.out.println("You now have " + taskCount + " tasks in the list.");
+            System.out.println();
         } else {
             System.out.println("Task list full. Cannot add any more tasks.");
         }
