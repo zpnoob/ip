@@ -1,13 +1,19 @@
 Hello! I'm Jung.
 I don't really want to help but what can I do for you today?
 
+Oops! The description of a todo cannot be empty. Try: todo [description]
+
 Okay. I've added this task:
 [T][ ] read book
 You now have 1 tasks in the list.
 
+Oops! Deadline task requires a '/by' date/time. Format: deadline [desc] /by [datetime]
+
 Okay. I've added this task:
 [D][ ] return book (by: Sunday)
 You now have 2 tasks in the list.
+
+Oops! Event task requires both '/from' and '/to' date/time. Format: event [desc] /from [start] /to [end]
 
 Okay. I've added this task:
 [E][ ] meeting (from: Mon 2pm to: 4pm)
@@ -17,6 +23,10 @@ Here are the tasks in your list:
 1. [T][ ] read book
 2. [D][ ] return book (by: Sunday)
 3. [E][ ] meeting (from: Mon 2pm to: 4pm)
+
+Oops! Mark requires a task number. Example mark 1
+
+Oops! Invalid task number. Please enter a valid number.
 
 Lame, this task is marked as done.
 [T][X] read book
