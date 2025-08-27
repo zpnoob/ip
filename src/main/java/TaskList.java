@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class TaskList {
+
     private ArrayList<Task> tasks;
     private Storage storage;
 
@@ -14,43 +15,44 @@ public class TaskList {
         this.storage = storage;
     }
 
-    public void addTask(Task task) throws IOException {
-        tasks.add(task);
-        saveTasks();
-        System.out.println("Okay. I've added this task:");
-        System.out.println(task);
-        System.out.println("You now have " + tasks.size() + " tasks in the list.");
-        System.out.println();
+    public ArrayList<Task> getTasks() {
+        return tasks;
     }
 
-    public void deleteTask(int index) throws JungException, IOException {
+    public int size() {
+        return tasks.size();
+    }
+
+    public Task addTask(Task task) throws IOException {
+        tasks.add(task);
+        saveTasks();
+        return task;
+    }
+
+    public Task deleteTask(int index) throws JungException, IOException {
         validateIndex(index);
         Task removed = tasks.remove(index);
         saveTasks();
-        System.out.println("Okay. I've removed this task:");
-        System.out.println(removed);
-        System.out.println("Now you have " + tasks.size() + " tasks in the list.");
-        System.out.println();
+        return removed;
     }
 
-    public void markTask(int index) throws JungException, IOException {
+    public Task markTask(int index) throws JungException, IOException {
         validateIndex(index);
-        tasks.get(index).markAsDone();
+        Task t = tasks.get(index);
+        t.markAsDone();
         saveTasks();
-        System.out.println("Lame, this task is marked as done.");
-        System.out.println(tasks.get(index));
-        System.out.println();
+        return t;
     }
 
-    public void unmarkTask(int index) throws JungException, IOException {
+    public Task unmarkTask(int index) throws JungException, IOException {
         validateIndex(index);
-        tasks.get(index).markAsNotDone();
+        Task t = tasks.get(index);
+        t.markAsNotDone();
         saveTasks();
-        System.out.println("I've marked this task as not done yet.");
-        System.out.println(tasks.get(index));
-        System.out.println();
+        return t;
     }
 
+    /*
     public void listTasks() {
         if (tasks.isEmpty()) {
             System.out.println("Your task list is currently empty.");
@@ -62,6 +64,7 @@ public class TaskList {
         }
         System.out.println();
     }
+    */
 
     private void saveTasks() throws IOException {
         if (storage != null) {

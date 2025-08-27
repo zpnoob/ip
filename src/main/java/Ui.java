@@ -26,6 +26,7 @@ public class Ui {
 
     public void showError(String message) {
         System.out.println("Oops!" + message);
+        showSpace();
     }
 
     public String readCommand() {
