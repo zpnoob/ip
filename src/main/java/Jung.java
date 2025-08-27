@@ -1,12 +1,11 @@
 import java.io.IOException;
-import java.sql.Array;
-import java.text.NumberFormat;
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 
 public class Jung {
 
-    //given that there is no more than 100 task so can use String[100]
     private static TaskList taskList;
     private static Storage storage;
 
@@ -92,7 +91,12 @@ public class Jung {
                     if (desc.isEmpty() || by.isEmpty()) {
                         throw new JungException("Deadline description or date/time cannot be empty.");
                     }
-                    taskList.addTask(new Deadline(desc, by));
+                    try {
+                        LocalDate byDate = LocalDate.parse(by);
+                        taskList.addTask(new Deadline(desc, byDate));
+                    } catch (DateTimeParseException e) {
+                        throw new JungException("Invalid date format. Use yyyy-MM-dd.");
+                    }
                 }
 
                 //event command
@@ -108,7 +112,13 @@ public class Jung {
                     if (desc.isEmpty() || from.isEmpty() || to.isEmpty()) {
                         throw new JungException("Event description, start, and end date/time cannot be empty.");
                     }
-                    taskList.addTask(new Event(desc, from, to));
+                    try {
+                        LocalDate fromDate = LocalDate.parse(from);
+                        LocalDate toDate = LocalDate.parse(to);
+                        taskList.addTask(new Event(desc, fromDate, toDate));
+                    } catch (DateTimeParseException e) {
+                        throw new JungException("Invalid Date format. Use yyyy-MM-dd.");
+                    }
                 }
 
                 //invalid commands
