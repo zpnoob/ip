@@ -15,7 +15,7 @@ public class Parser {
         case "todo":
             String todoDesc = trimmedInput.substring(4).trim();
             if (todoDesc.isEmpty()) {
-                throw new JungException("The description of a todo cannot be empty.");
+                throw new JungException("The description of a todo cannot be empty. Try: todo [description]");
             }
             return new AddTodoCommand(todoDesc);
         case "deadline":

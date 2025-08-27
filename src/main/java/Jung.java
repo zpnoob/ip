@@ -35,8 +35,6 @@ public class Jung {
             } catch (JungException | IOException e) {
                 ui.showError(e.getMessage());
             }
-
-            ui.showSpace();
         }
     }
 }

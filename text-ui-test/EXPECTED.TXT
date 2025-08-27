@@ -1,5 +1,5 @@
 Hello! I'm Jung.
-I don't really want to help but what can I do for you today?
+I don't really want to help but bopes, what can I do for you today?
 
 Oops! The description of a todo cannot be empty. Try: todo [description]
 
@@ -7,62 +7,62 @@ Okay. I've added this task:
 [T][ ] read book
 You now have 1 tasks in the list.
 
-Oops! Deadline task requires a '/by' date/time. Format: deadline [desc] /by [datetime]
+Oops! Invalid date/time format. Please use d/M/yyyy HHmm.
 
 Okay. I've added this task:
-[D][ ] return book (by: Sunday)
+[D][ ] return book (by: 30 Aug 2025, 6:00 pm)
 You now have 2 tasks in the list.
 
-Oops! Event task requires both '/from' and '/to' date/time. Format: event [desc] /from [start] /to [end]
+Oops! Event task requires both '/from' and '/to' date/time.
 
 Okay. I've added this task:
-[E][ ] meeting (from: Mon 2pm to: 4pm)
+[E][ ] meeting (from: 30 Aug 2025, 7:00 pm to: 30 Aug 2025, 8:00 pm)
 You now have 3 tasks in the list.
 
 Here are the tasks in your list:
 1. [T][ ] read book
-2. [D][ ] return book (by: Sunday)
-3. [E][ ] meeting (from: Mon 2pm to: 4pm)
+2. [D][ ] return book (by: 30 Aug 2025, 6:00 pm)
+3. [E][ ] meeting (from: 30 Aug 2025, 7:00 pm to: 30 Aug 2025, 8:00 pm)
 
-Oops! Mark command requires a number. Eg: mark 1
+Oops! mark command requires a task number.
 
-Oops! invalid task number, please enter a valid number.
+Oops! Invalid task number, please enter a valid number.
 
 Lame, this task is marked as done.
 [T][X] read book
 
 Here are the tasks in your list:
 1. [T][X] read book
-2. [D][ ] return book (by: Sunday)
-3. [E][ ] meeting (from: Mon 2pm to: 4pm)
+2. [D][ ] return book (by: 30 Aug 2025, 6:00 pm)
+3. [E][ ] meeting (from: 30 Aug 2025, 7:00 pm to: 30 Aug 2025, 8:00 pm)
 
 Lame, this task is marked as done.
-[D][X] return book (by: Sunday)
+[D][X] return book (by: 30 Aug 2025, 6:00 pm)
 
 Here are the tasks in your list:
 1. [T][X] read book
-2. [D][X] return book (by: Sunday)
-3. [E][ ] meeting (from: Mon 2pm to: 4pm)
+2. [D][X] return book (by: 30 Aug 2025, 6:00 pm)
+3. [E][ ] meeting (from: 30 Aug 2025, 7:00 pm to: 30 Aug 2025, 8:00 pm)
 
 I've marked this task as not done yet.
-[D][ ] return book (by: Sunday)
+[D][ ] return book (by: 30 Aug 2025, 6:00 pm)
 
 Lame, this task is marked as done.
-[E][X] meeting (from: Mon 2pm to: 4pm)
+[E][X] meeting (from: 30 Aug 2025, 7:00 pm to: 30 Aug 2025, 8:00 pm)
 
 Here are the tasks in your list:
 1. [T][X] read book
-2. [D][ ] return book (by: Sunday)
-3. [E][X] meeting (from: Mon 2pm to: 4pm)
+2. [D][ ] return book (by: 30 Aug 2025, 6:00 pm)
+3. [E][X] meeting (from: 30 Aug 2025, 7:00 pm to: 30 Aug 2025, 8:00 pm)
 
-Oops! Delete command requires a task number. Eg: delete 1
+Oops! delete command requires a task number.
 
 Okay. I've removed this task:
 [T][X] read book
 Now you have 2 tasks in the list.
 
 Here are the tasks in your list:
-1. [D][ ] return book (by: Sunday)
-2. [E][X] meeting (from: Mon 2pm to: 4pm)
+1. [D][ ] return book (by: 30 Aug 2025, 6:00 pm)
+2. [E][X] meeting (from: 30 Aug 2025, 7:00 pm to: 30 Aug 2025, 8:00 pm)
 
 Bye. I hope I never see you again..
