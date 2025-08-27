@@ -1,12 +1,13 @@
 import java.io.IOException;
-import java.sql.Array;
-import java.text.NumberFormat;
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class Jung {
 
-    //given that there is no more than 100 task so can use String[100]
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
     private static TaskList taskList;
     private static Storage storage;
 
@@ -85,14 +86,20 @@ public class Jung {
                 else if (input.toLowerCase().startsWith("deadline")) {
                     int byIndex = input.indexOf("/by");
                     if (byIndex == -1) {
-                        throw new JungException("Deadline task requires a '/by' date/time. Format: deadline [desc] /by [datetime]");
+                        throw new JungException("Deadline task requires a '/by' date/time. " +
+                                "Format: deadline [desc] /by [datetime]");
                     }
                     String desc = input.substring(8, byIndex).trim();
                     String by = input.substring(byIndex + 3).trim();
                     if (desc.isEmpty() || by.isEmpty()) {
                         throw new JungException("Deadline description or date/time cannot be empty.");
                     }
-                    taskList.addTask(new Deadline(desc, by));
+                    try {
+                        LocalDateTime byDateTime = LocalDateTime.parse(by, DATE_TIME_FORMATTER);
+                        taskList.addTask(new Deadline(desc, byDateTime));
+                    } catch (DateTimeParseException e) {
+                        throw new JungException("Invalid date/time format. Use d/M/yyyy HHmm, e.g., 2/12/2025 1800.");
+                    }
                 }
 
                 //event command
@@ -100,7 +107,8 @@ public class Jung {
                     int fromIndex = input.indexOf("/from");
                     int toIndex = input.indexOf("/to");
                     if (fromIndex == -1 || toIndex == -1 || fromIndex > toIndex) {
-                        throw new JungException("Event task requires both '/from' and '/to' date/time. Format: event [desc] /from [start] /to [end]");
+                        throw new JungException("Event task requires both '/from' and '/to' date/time. " +
+                                "Format: event [desc] /from [start] /to [end]");
                     }
                     String desc = input.substring(5, fromIndex).trim();
                     String from = input.substring(fromIndex + 5, toIndex).trim();
@@ -108,7 +116,13 @@ public class Jung {
                     if (desc.isEmpty() || from.isEmpty() || to.isEmpty()) {
                         throw new JungException("Event description, start, and end date/time cannot be empty.");
                     }
-                    taskList.addTask(new Event(desc, from, to));
+                    try {
+                        LocalDateTime fromDateTime = LocalDateTime.parse(from, DATE_TIME_FORMATTER);
+                        LocalDateTime toDateTime = LocalDateTime.parse(to, DATE_TIME_FORMATTER);
+                        taskList.addTask(new Event(desc, fromDateTime, toDateTime));
+                    } catch (DateTimeParseException e) {
+                        throw new JungException("Invalid Date format. Use d/M/yyyy HHmm, e.g., 2/12/2025 1800.");
+                    }
                 }
 
                 //invalid commands

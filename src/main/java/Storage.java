@@ -1,10 +1,12 @@
-import java.lang.reflect.Array;
 import java.nio.file.*;
 import java.io.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class Storage {
     private final Path filePath;
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
 
     public Storage(String filePathStr) {
         this.filePath = Paths.get(filePathStr);
@@ -14,7 +16,7 @@ public class Storage {
     public ArrayList<Task> load() throws IOException {
         ArrayList<Task> tasks = new ArrayList<>();
         if(!Files.exists(filePath)) {
-            //if it doesnt exist, create a folder and file for it on first run
+            //if it doesn't exist, create a folder and file for it on first run
             Files.createDirectories(filePath.getParent());
             Files.createFile(filePath);
             // return empty list at first run
@@ -36,14 +38,17 @@ public class Storage {
                 tasks.add(todo);
                 break;
             case "D":
-                Task deadline = new Deadline(parts[2], parts[3]);
+                LocalDateTime deadlineDate = LocalDateTime.parse(parts[3],DATE_TIME_FORMATTER);
+                Task deadline = new Deadline(parts[2], deadlineDate);
                 if (parts[1].equals("1")) {
                     deadline.markAsDone();
                 }
                 tasks.add(deadline);
                 break;
             case "E":
-                Task event = new Event(parts[2], parts[3], parts.length > 4 ? parts[4] : "");
+                LocalDateTime fromDate = LocalDateTime.parse(parts[3],DATE_TIME_FORMATTER);
+                LocalDateTime toDate = LocalDateTime.parse(parts[4], DATE_TIME_FORMATTER);
+                Task event = new Event(parts[2], fromDate, toDate);
                 if (parts[1].equals("1")) {
                     event.markAsDone();
                 }
