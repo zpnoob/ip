@@ -34,7 +34,7 @@ public class Ui {
 
     // Additional helper methods to show confirmation or task lists
 
-    public void listTasks(ArrayList<Task> tasks) {
+    public void showTasks(ArrayList<Task> tasks) {
         if (tasks.isEmpty()) {
             System.out.println("Your task list is currently empty.");
         } else {
@@ -46,27 +46,27 @@ public class Ui {
         showSpace();
     }
 
-    public void AddTask(Task task, int size) {
+    public void showAddTask(Task task, int size) {
         System.out.println("Okay. I've added this task:");
         System.out.println(task);
         System.out.println("You now have " + size + " tasks in the list.");
         showSpace();
     }
 
-    public void deleteTask(Task task, int size) {
+    public void showDeleteTask(Task task, int size) {
         System.out.println("Okay. I've removed this task:");
         System.out.println(task);
         System.out.println("Now you have " + size + " tasks in the list.");
         showSpace();
     }
 
-    public void mark(Task task) {
+    public void showMark(Task task) {
         System.out.println("Lame, this task is marked as done.");
         System.out.println(task);
         System.out.println();
     }
 
-    public void unmark(Task task) {
+    public void showUnmark(Task task) {
         System.out.println("I've marked this task as not done yet.");
         System.out.println(task);
         System.out.println();
