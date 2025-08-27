@@ -35,6 +35,8 @@ public abstract class Task {
         return this.taskSymbol;
     }
 
+    public abstract String toFileString();
+
     //need to add a toString to represent [X] or [ ]
     @Override
     public String toString() {
