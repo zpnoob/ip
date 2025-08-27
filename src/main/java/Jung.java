@@ -1,3 +1,5 @@
+import java.io.IOException;
+import java.sql.Array;
 import java.text.NumberFormat;
 import java.util.Scanner;
 import java.util.ArrayList;
@@ -5,10 +7,20 @@ import java.util.ArrayList;
 public class Jung {
 
     //given that there is no more than 100 task so can use String[100]
-    private static TaskList tasks = new TaskList();
+    private static TaskList taskList;
+    private static Storage storage;
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+        storage = new Storage("data/jung.txt");
+        try {
+            taskList = new TaskList(storage.load(), storage);
+            // Load what has already been in storage
+        } catch (IOException e) {
+            System.out.println("Failed to load tasks, starting with empty list.");
+            taskList = new TaskList(new ArrayList<>(), storage);
+            // Initialise an empty list if no data/jung.txt in storage
+        }
         //scans in any input by user
         System.out.println("Hello! I'm Jung.");
         System.out.println("I don't really want to help but what can I do for you today?");
@@ -27,7 +39,7 @@ public class Jung {
                     System.out.println("Bye. I hope I never see you again..");
                     break;
                 } else if (input.equalsIgnoreCase("list")) {
-                    tasks.listTasks();
+                    taskList.listTasks();
                 }
 
                 //delete command
@@ -37,7 +49,7 @@ public class Jung {
                         throw new JungException("Delete command requires a task number. Eg: delete 1");
                     }
                     int index = parseIndexFromCommand(argument);
-                    tasks.deleteTask(index);
+                    taskList.deleteTask(index);
                 }
 
                 //mark command
@@ -47,7 +59,7 @@ public class Jung {
                         throw new JungException("Mark command requires a number. Eg: mark 1");
                     }
                     int index = parseIndexFromCommand(argument);
-                    tasks.markTask(index);
+                    taskList.markTask(index);
                 }
 
                 //unmark command
@@ -57,7 +69,7 @@ public class Jung {
                         throw new JungException("Unmark command requires a number. Eg: unmark 1");
                     }
                     int index = parseIndexFromCommand(argument);
-                    tasks.unmarkTask(index);
+                    taskList.unmarkTask(index);
                 }
 
                 //todo command
@@ -66,7 +78,7 @@ public class Jung {
                     if (desc.isEmpty()) {
                         throw new JungException("The description of a todo cannot be empty. Try: todo [description]");
                     }
-                    tasks.addTask(new ToDo(desc));
+                    taskList.addTask(new ToDo(desc));
                 }
 
                 //deadline command
@@ -80,7 +92,7 @@ public class Jung {
                     if (desc.isEmpty() || by.isEmpty()) {
                         throw new JungException("Deadline description or date/time cannot be empty.");
                     }
-                    tasks.addTask(new Deadline(desc, by));
+                    taskList.addTask(new Deadline(desc, by));
                 }
 
                 //event command
@@ -96,7 +108,7 @@ public class Jung {
                     if (desc.isEmpty() || from.isEmpty() || to.isEmpty()) {
                         throw new JungException("Event description, start, and end date/time cannot be empty.");
                     }
-                    tasks.addTask(new Event(desc, from, to));
+                    taskList.addTask(new Event(desc, from, to));
                 }
 
                 //invalid commands
@@ -106,6 +118,8 @@ public class Jung {
             } catch (JungException e) {
                 System.out.println("Oops! " + e.getMessage());
                 System.out.println();
+            } catch (IOException e) {
+                System.out.println("Oops! Failed to save data:");
             }
         }
     }

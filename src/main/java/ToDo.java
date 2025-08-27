@@ -4,5 +4,8 @@ public class ToDo extends Task {
         super(description, 'T');
     }
 
-    //class has no extra requirements/fields so can just take the Task's toString method
+    @Override
+    public String toFileString() {
+        return "T | " + (isDone() ? "1" : "0") + " | " + getDescription();
+    }
 }
