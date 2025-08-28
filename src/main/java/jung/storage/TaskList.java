@@ -57,20 +57,6 @@ public class TaskList {
         return t;
     }
 
-    /*
-    public void listTasks() {
-        if (tasks.isEmpty()) {
-            System.out.println("Your task list is currently empty.");
-        } else {
-            System.out.println("Here are the tasks in your list:");
-            for (int i = 0; i < tasks.size(); i++) {
-                System.out.println((i + 1) + ". " + tasks.get(i));
-            }
-        }
-        System.out.println();
-    }
-    */
-
     private void saveTasks() throws IOException {
         if (storage != null) {
             storage.save(tasks);
@@ -79,7 +65,8 @@ public class TaskList {
 
     private void validateIndex(int index) throws JungException {
         if (index < 0 || index >= tasks.size()) {
-            throw new JungException("Invalid task number, please enter a valid number.");
+            throw new JungException("Invalid task number, please enter " +
+                    "a valid number.");
         }
     }
 }

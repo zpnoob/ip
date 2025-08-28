@@ -16,7 +16,8 @@ public class AddDeadlineCommand extends Command {
 
     private String description;
     private String byStr;
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
+    private static final DateTimeFormatter formatter =
+            DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
 
     public AddDeadlineCommand(String description, String byStr) {
         this.description = description;
@@ -24,14 +25,16 @@ public class AddDeadlineCommand extends Command {
     }
 
     @Override
-    public void execute(TaskList tasks, Ui ui, Storage storage) throws IOException, JungException {
+    public void execute(TaskList tasks, Ui ui, Storage storage) throws
+            IOException, JungException {
         try {
             LocalDateTime by = LocalDateTime.parse(byStr, formatter);
             Task newTask = new Deadline(description, by);
             tasks.addTask(newTask);
             ui.showAddTask(newTask, tasks.size());
         } catch (DateTimeParseException e) {
-            throw new JungException("Invalid date/time format. Please use d/M/yyyy HHmm.");
+            throw new JungException("Invalid date/time format. " +
+                    "Please use d/M/yyyy HHmm.");
         }
     }
 }
