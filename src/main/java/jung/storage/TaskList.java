@@ -102,6 +102,16 @@ public class TaskList {
         return t;
     }
 
+    public ArrayList<Task> findTasksByKeyword(String keyword) {
+        ArrayList<Task> results = new ArrayList<>();
+        for (Task task : tasks) {
+            if (task.getDescription().toLowerCase().contains(keyword.toLowerCase())) {
+                results.add(task);
+            }
+        }
+        return results;
+    }
+
     private void saveTasks() throws IOException {
         if (storage != null) {
             storage.save(tasks);

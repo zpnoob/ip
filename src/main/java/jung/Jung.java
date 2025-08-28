@@ -35,7 +35,6 @@ public class Jung {
 
         while (!exit) {
             String input = ui.readCommand();
-
             try {
                 Command command = Parser.parse(input);
                 command.execute(taskList, ui, storage);
