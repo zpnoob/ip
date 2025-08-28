@@ -1,32 +1,29 @@
 import java.nio.file.*;
-import java.io.*;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.*;
 
 public class Storage {
     private final Path filePath;
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
 
-    public Storage(String filePathStr) {
+    public Storage(String filePathStr) throws IOException {
         this.filePath = Paths.get(filePathStr);
+        if (!Files.exists(filePath)) {
+            Files.createDirectories(filePath.getParent());
+            Files.createFile(filePath);
+        }
     }
 
     //load tasks from file and return the arraylist of task last saved
     public ArrayList<Task> load() throws IOException {
         ArrayList<Task> tasks = new ArrayList<>();
-        if(!Files.exists(filePath)) {
-            //if it doesn't exist, create a folder and file for it on first run
-            Files.createDirectories(filePath.getParent());
-            Files.createFile(filePath);
-            // return empty list at first run
-            return tasks;
-        }
-
-        //open text file located at filePath
-        BufferedReader reader = Files.newBufferedReader(filePath);
-        String line;
-        while ((line = reader.readLine()) != null) {
+        // reads all lines from the file into a list<String>, each string corresponds to one task saved before
+        // then loop over each line/string and splits it up by |
+        List<String> lines = Files.readAllLines(filePath);
+        for (String line : lines) {
             //split each line into parts, where each line is expected to have values separated by |
             String[] parts = line.split(" \\| ");
             switch (parts[0]) {
@@ -38,7 +35,7 @@ public class Storage {
                 tasks.add(todo);
                 break;
             case "D":
-                LocalDateTime deadlineDate = LocalDateTime.parse(parts[3],DATE_TIME_FORMATTER);
+                LocalDateTime deadlineDate = LocalDateTime.parse(parts[3], DATE_TIME_FORMATTER);
                 Task deadline = new Deadline(parts[2], deadlineDate);
                 if (parts[1].equals("1")) {
                     deadline.markAsDone();
@@ -46,7 +43,7 @@ public class Storage {
                 tasks.add(deadline);
                 break;
             case "E":
-                LocalDateTime fromDate = LocalDateTime.parse(parts[3],DATE_TIME_FORMATTER);
+                LocalDateTime fromDate = LocalDateTime.parse(parts[3], DATE_TIME_FORMATTER);
                 LocalDateTime toDate = LocalDateTime.parse(parts[4], DATE_TIME_FORMATTER);
                 Task event = new Event(parts[2], fromDate, toDate);
                 if (parts[1].equals("1")) {
@@ -56,20 +53,17 @@ public class Storage {
                 break;
             }
         }
-        reader.close();
         return tasks;
     }
 
     // save the tasks back into the file
     public void save(ArrayList<Task> tasks) throws IOException {
-        BufferedWriter writer = Files.newBufferedWriter(filePath);
-        // Open the file at filePath, overwrite content if file exists or create file if it doesn't
-        for (Task task : tasks) {
-            // Method for writing each task back into the format to be saved
-            writer.write(task.toFileString());
-            writer.newLine();
+        List<String> lines = new ArrayList<>();
+        for (Task t : tasks) {
+            lines.add(t.toFileString());
         }
-        writer.close();
+        Files.write(filePath, lines);
+        // write content of the lines list to file at filePath, replacing what is in there
     }
 
 }

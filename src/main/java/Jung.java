@@ -7,7 +7,7 @@ public class Jung {
     private static Storage storage;
     private static Ui ui;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         ui = new Ui();
         //Ui() will scan inputs instead
         storage = new Storage("data/jung.txt");
