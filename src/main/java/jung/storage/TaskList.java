@@ -57,19 +57,15 @@ public class TaskList {
         return t;
     }
 
-    /*
-    public void listTasks() {
-        if (tasks.isEmpty()) {
-            System.out.println("Your task list is currently empty.");
-        } else {
-            System.out.println("Here are the tasks in your list:");
-            for (int i = 0; i < tasks.size(); i++) {
-                System.out.println((i + 1) + ". " + tasks.get(i));
+    public ArrayList<Task> findTasksByKeyword(String keyword) {
+        ArrayList<Task> results = new ArrayList<>();
+        for (Task task : tasks) {
+            if (task.getDescription().toLowerCase().contains(keyword.toLowerCase())) {
+                results.add(task);
             }
         }
-        System.out.println();
+        return results;
     }
-    */
 
     private void saveTasks() throws IOException {
         if (storage != null) {
