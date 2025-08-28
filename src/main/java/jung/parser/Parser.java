@@ -6,10 +6,12 @@ import jung.command.AddEventCommand;
 import jung.command.AddTodoCommand;
 import jung.command.Command;
 import jung.command.ExitCommand;
+import jung.command.FindCommand;
 import jung.command.ListCommand;
 import jung.command.ModifyTaskCommand;
 
 public class Parser {
+
     public static Command parse(String input) throws JungException {
         String trimmedInput = input.trim();
         if (trimmedInput.isEmpty()) {
@@ -69,6 +71,12 @@ public class Parser {
                 throw new JungException("Invalid task number format.");
             }
             return new ModifyTaskCommand(commandWord, index);
+        case "find":
+            String keyword = trimmedInput.substring(commandWord.length()).trim();
+            if (keyword.isEmpty()) {
+                throw new JungException("The find command requires a keyword to search.");
+            }
+            return new FindCommand(keyword);
         default:
             throw new JungException("Sorry, I don't recognise that command.");
         }
