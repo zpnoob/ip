@@ -12,17 +12,36 @@ import jung.storage.TaskList;
 import jung.task.Deadline;
 import jung.task.Task;
 
+/**
+ * Adds a deadline task to the task list.
+ * Parses the date/time string and creates a Deadline task.
+ */
 public class AddDeadlineCommand extends Command {
 
     private String description;
     private String byStr;
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
 
+    /**
+     * Constructor for AddDeadlineCommand.
+     *
+     * @param description Task description.
+     * @param byStr Deadline date/time in "d/M/yyyy HHmm" format.
+     */
     public AddDeadlineCommand(String description, String byStr) {
         this.description = description;
         this.byStr = byStr;
     }
 
+    /**
+     * Executes the add deadline command by creating a Deadline task and adding it.
+     *
+     * @param tasks TaskList to add the task into.
+     * @param ui Ui interface for user interactions.
+     * @param storage Storage to persist tasks.
+     * @throws IOException If saving tasks fails.
+     * @throws JungException If date/time parsing fails.
+     */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) throws IOException, JungException {
         try {

@@ -1,11 +1,21 @@
 package jung.task;
 
+/**
+ * Abstract base class for different types of tasks.
+ * Contains a description, done status, and task symbol.
+ */
 public abstract class Task {
     private String description;
     private boolean isDone;
     private char taskSymbol;
-    //this field
 
+
+    /**
+     * Constructs a Task with description and symbol.
+     *
+     * @param description Task description.
+     * @param taskSymbol Character representing the task type.
+     */
     public Task(String description, char taskSymbol) {
         this.description = description;
         this.isDone = false;

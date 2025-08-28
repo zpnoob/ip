@@ -12,10 +12,20 @@ import jung.task.Event;
 import jung.task.Task;
 import jung.task.ToDo;
 
+/**
+ * Handles reading from and writing to the tasks data file.
+ */
 public class Storage {
+
     private final Path filePath;
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
 
+    /**
+     * Creates a Storage handler for the given file path.
+     *
+     * @param filePathStr Path to the data file.
+     * @throws IOException If file or directory creation fails.
+     */
     public Storage(String filePathStr) throws IOException {
         this.filePath = Paths.get(filePathStr);
         if (!Files.exists(filePath)) {
@@ -24,7 +34,12 @@ public class Storage {
         }
     }
 
-    //load tasks from file and return the arraylist of task last saved
+    /**
+     * Loads tasks from the data file and returns a list of tasks.
+     *
+     * @return List of tasks loaded from file.
+     * @throws IOException If reading file fails.
+     */
     public ArrayList<Task> load() throws IOException {
         ArrayList<Task> tasks = new ArrayList<>();
         // reads all lines from the file into a list<String>, each string corresponds to one task saved before
@@ -63,7 +78,12 @@ public class Storage {
         return tasks;
     }
 
-    // save the tasks back into the file
+    /**
+     * Saves the list of tasks to the data file.
+     *
+     * @param tasks List of tasks to save.
+     * @throws IOException If writing to file fails.
+     */
     public void save(ArrayList<Task> tasks) throws IOException {
         List<String> lines = new ArrayList<>();
         for (Task t : tasks) {

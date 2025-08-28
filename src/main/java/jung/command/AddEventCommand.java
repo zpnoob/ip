@@ -11,7 +11,9 @@ import jung.storage.Storage;
 import jung.storage.TaskList;
 import jung.task.Event;
 import jung.task.Task;
-
+/**
+ * Command to add an event task with from and to date/time.
+ */
 public class AddEventCommand extends Command {
 
     private String description;
@@ -19,6 +21,13 @@ public class AddEventCommand extends Command {
     private String toStr;
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
 
+    /**
+     * Creates AddEventCommand with description, start, and end date/time.
+     *
+     * @param description Description of event.
+     * @param fromStr Start date/time string.
+     * @param toStr End date/time string.
+     */
     public AddEventCommand(String description, String fromStr, String toStr) {
         this.description = description;
         this.fromStr = fromStr;

@@ -9,7 +9,18 @@ import jung.command.ExitCommand;
 import jung.command.ListCommand;
 import jung.command.ModifyTaskCommand;
 
+/**
+ * Parser to parse user input strings into Command objects.
+ */
 public class Parser {
+
+    /**
+     * Parses the raw user input into an appropriate Command instance.
+     *
+     * @param input Raw input string.
+     * @return Parsed Command object.
+     * @throws JungException If input format is invalid or command unknown.
+     */
     public static Command parse(String input) throws JungException {
         String trimmedInput = input.trim();
         if (trimmedInput.isEmpty()) {
@@ -74,6 +85,12 @@ public class Parser {
         }
     }
 
+    /**
+     * Helper method to get the first word in a string.
+     *
+     * @param text Input string.
+     * @return The first word.
+     */
     private static String getFirstWord(String text) {
         int spaceIndex = text.indexOf(" ");
         if (spaceIndex == -1) {
