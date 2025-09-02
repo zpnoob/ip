@@ -1,4 +1,4 @@
-package jung;
+package jung.gui;
 
 import java.util.ArrayList;
 import java.util.Scanner;

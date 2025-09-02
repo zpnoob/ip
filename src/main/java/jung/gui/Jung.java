@@ -1,8 +1,9 @@
-package jung;
+package jung.gui;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
+import jung.exceptions.JungException;
 import jung.command.Command;
 import jung.parser.Parser;
 import jung.storage.Storage;
@@ -14,6 +15,7 @@ public class Jung {
     private static TaskList taskList;
     private static Storage storage;
     private static Ui ui;
+    private static boolean initialized = false;
 
     public static void main(String[] args) throws IOException {
         ui = new Ui();
@@ -43,6 +45,23 @@ public class Jung {
                 ui.showError(e.getMessage());
             }
         }
+    }
+
+    private static void initialize() throws IOException {
+        if (initialized) return;
+        ui = new Ui();
+        storage = new Storage("data/jung.txt");
+        try {
+            taskList = new TaskList(storage.load(), storage);
+        } catch (IOException e) {
+            ui.showLoadingError();
+            taskList = new TaskList(new ArrayList<>(), storage);
+        }
+        initialized = true;
+    }
+
+    public static String getResponse(String input) {
+        return "Jung heard: " + input;
     }
 }
 

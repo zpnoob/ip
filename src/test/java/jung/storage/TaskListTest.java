@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.ArrayList;
-import jung.JungException;
+import jung.exceptions.JungException;
 import jung.task.Task;
 import jung.task.ToDo;
 

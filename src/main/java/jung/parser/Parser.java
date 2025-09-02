@@ -1,6 +1,6 @@
 package jung.parser;
 
-import jung.JungException;
+import jung.exceptions.JungException;
 import jung.command.AddDeadlineCommand;
 import jung.command.AddEventCommand;
 import jung.command.AddTodoCommand;

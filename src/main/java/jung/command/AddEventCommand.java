@@ -5,8 +5,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
-import jung.JungException;
-import jung.Ui;
+import jung.exceptions.JungException;
+import jung.gui.Ui;
 import jung.storage.Storage;
 import jung.storage.TaskList;
 import jung.task.Event;
