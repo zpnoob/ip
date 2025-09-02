@@ -20,10 +20,11 @@ public class FindCommand extends Command{
     }
 
     @Override
-    public void execute(TaskList tasks, Ui ui, Storage storage) throws
+    public String execute(TaskList tasks, Ui ui, Storage storage) throws
             IOException, JungException {
         ArrayList<Task> matchedTasks = tasks.findTasksByKeyword(keyword);
         ui.showFind(matchedTasks);
+        return null;
     }
 
 }

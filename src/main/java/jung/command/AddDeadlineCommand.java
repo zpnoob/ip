@@ -37,14 +37,15 @@ public class AddDeadlineCommand extends Command {
     /**
      * Executes the add deadline command by creating a Deadline task and adding it.
      *
-     * @param tasks TaskList to add the task into.
-     * @param ui Ui interface for user interactions.
+     * @param tasks   TaskList to add the task into.
+     * @param ui      Ui interface for user interactions.
      * @param storage Storage to persist tasks.
-     * @throws IOException If saving tasks fails.
+     * @return
+     * @throws IOException   If saving tasks fails.
      * @throws JungException If date/time parsing fails.
      */
     @Override
-    public void execute(TaskList tasks, Ui ui, Storage storage) throws
+    public String execute(TaskList tasks, Ui ui, Storage storage) throws
             IOException, JungException {
         try {
             LocalDateTime by = LocalDateTime.parse(byStr, formatter);
@@ -55,6 +56,7 @@ public class AddDeadlineCommand extends Command {
             throw new JungException("Invalid date/time format. " +
                     "Please use d/M/yyyy HHmm.");
         }
+        return null;
     }
 }
 

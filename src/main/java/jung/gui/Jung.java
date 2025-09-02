@@ -61,7 +61,23 @@ public class Jung {
     }
 
     public static String getResponse(String input) {
-        return "Jung heard: " + input;
+        try {
+            if (!initialized) {
+                initialize();
+            }
+            Command command = Parser.parse(input);
+            String output = command.execute(taskList, ui, storage);
+            if (command.isExit()) {
+                // Optionally handle app exit if needed
+            }
+            return output;
+        } catch (JungException | IOException e) {
+            return e.getMessage();
+        }
+    }
+
+    public String getWelcomeMessage() {
+        return "Hello! I'm Jung.\nI don't really want to help but bopes, what can I do for you today?";
     }
 }
 

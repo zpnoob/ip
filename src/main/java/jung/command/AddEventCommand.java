@@ -35,7 +35,7 @@ public class AddEventCommand extends Command {
     }
 
     @Override
-    public void execute(TaskList tasks, Ui ui, Storage storage) throws IOException, JungException {
+    public String execute(TaskList tasks, Ui ui, Storage storage) throws IOException, JungException {
         try {
             LocalDateTime from = LocalDateTime.parse(fromStr, formatter);
             LocalDateTime to = LocalDateTime.parse(toStr, formatter);
@@ -45,5 +45,6 @@ public class AddEventCommand extends Command {
         } catch (DateTimeParseException e) {
             throw new JungException("Invalid date/time format. Please use d/M/yyyy HHmm.");
         }
+        return null;
     }
 }

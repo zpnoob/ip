@@ -12,12 +12,14 @@ public class ListCommand extends Command {
     /**
      * Executes the list command to show all tasks.
      *
-     * @param tasks TaskList containing tasks to show.
-     * @param ui User interface for displaying the task list.
+     * @param tasks   TaskList containing tasks to show.
+     * @param ui      User interface for displaying the task list.
      * @param storage Not used in ListCommand.
+     * @return
      */
     @Override
-    public void execute(TaskList tasks, Ui ui, Storage storage) {
+    public String execute(TaskList tasks, Ui ui, Storage storage) {
         ui.showTasks(tasks.getTasks());
+        return null;
     }
 }

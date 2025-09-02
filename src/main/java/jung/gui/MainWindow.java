@@ -33,7 +33,11 @@ public class MainWindow extends AnchorPane {
 
     /** Injects the Duke instance */
     public void setJung(Jung j) {
-        jung = j;
+        this.jung = j;
+
+        dialogContainer.getChildren().add(
+                DialogBox.getJungDialog(jung.getWelcomeMessage(), jungImage)
+        );
     }
 
     /**
