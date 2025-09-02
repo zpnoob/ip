@@ -14,11 +14,10 @@ public class Jung {
 
     private static TaskList taskList;
     private static Storage storage;
-    private static Ui ui;
     private static boolean initialized = false;
 
     public static void main(String[] args) throws IOException {
-        ui = new Ui();
+        Ui ui = new Ui();
         //Ui() will scan inputs instead
         storage = new Storage("data/jung.txt");
 
@@ -26,12 +25,14 @@ public class Jung {
             taskList = new TaskList(storage.load(), storage);
             // Load what has already been in storage
         } catch (IOException e) {
-            ui.showLoadingError();
+            System.out.println("Failed to load tasks, starting with an empty list.");
             taskList = new TaskList(new ArrayList<>(), storage);
             // Initialises an empty list if no data/jung.txt in storage
         }
 
-        ui.showWelcome();
+        System.out.println("Hello! I'm Jung.");
+        System.out.println("I don't really want to help but bopes, " +
+                "what can I do for you today?\n");
 
         boolean exit = false;
 
@@ -39,25 +40,29 @@ public class Jung {
             String input = ui.readCommand();
             try {
                 Command command = Parser.parse(input);
-                command.execute(taskList, ui, storage);
+                String result = command.execute(taskList, null, storage);
+                System.out.println(result);
                 exit = command.isExit();
             } catch (JungException | IOException e) {
-                ui.showError(e.getMessage());
+                System.out.println("Oops! " + e.getMessage());
             }
         }
     }
 
-    private static void initialize() throws IOException {
-        if (initialized) return;
-        ui = new Ui();
+    public static String initialize() throws IOException {
+        if (initialized) return "";
+
         storage = new Storage("data/jung.txt");
         try {
             taskList = new TaskList(storage.load(), storage);
         } catch (IOException e) {
-            ui.showLoadingError();
             taskList = new TaskList(new ArrayList<>(), storage);
+            initialized = true;
+            return "Failed to load tasks, starting with an empty lists.";
         }
         initialized = true;
+        return "Hello! I'm Jung.\nI don't really want to help but bopes, " +
+                "what can I do for you today?";
     }
 
     public static String getResponse(String input) {
@@ -66,19 +71,25 @@ public class Jung {
                 initialize();
             }
             Command command = Parser.parse(input);
-            String output = command.execute(taskList, ui, storage);
-            if (command.isExit()) {
-                // Optionally handle app exit if needed
-            }
-            return output;
+            return command.execute(taskList, null, storage);
         } catch (JungException | IOException e) {
-            return e.getMessage();
+            return "Oops! " + e.getMessage();
         }
+    }
+
+    public static TaskList getTaskList() {
+        return taskList;
+    }
+
+    public static Storage getStorage() {
+        return storage;
     }
 
     public String getWelcomeMessage() {
         return "Hello! I'm Jung.\nI don't really want to help but bopes, what can I do for you today?";
     }
+
+
 }
 
 
