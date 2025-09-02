@@ -10,6 +10,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import jung.command.Command;
 import jung.exceptions.JungException;
 import jung.parser.Parser;
 
@@ -58,24 +59,29 @@ public class MainWindow extends AnchorPane {
     private void handleUserInput() {
         String input = userInput.getText();
         try {
-            String response = jung.getResponse(input);
+            // parse the command only once here
+            Command command = Parser.parse(input);
+            String response = command.execute(jung.getTaskList(), null, jung.getStorage());
+
             dialogContainer.getChildren().addAll(
                     DialogBox.getUserDialog(input, userImage),
                     DialogBox.getJungDialog(response, jungImage)
             );
             userInput.clear();
-            // exit immediately when user inputs "bye"
-            if (Parser.parse(input).isExit()) {
+
+            if (command.isExit()) {
                 Stage stage = (Stage) userInput.getScene().getWindow();
                 stage.close();
             }
         } catch (JungException e) {
-            dialogContainer.getChildren().add(
+            dialogContainer.getChildren().addAll(
+                    DialogBox.getUserDialog(input, userImage),
                     DialogBox.getJungDialog("Oops! " + e.getMessage(), jungImage)
             );
             userInput.clear();
         } catch (Exception e) {
-            dialogContainer.getChildren().add(
+            dialogContainer.getChildren().addAll(
+                    DialogBox.getUserDialog(input, userImage),
                     DialogBox.getJungDialog("An unexpected error occurred.", jungImage)
             );
             userInput.clear();
