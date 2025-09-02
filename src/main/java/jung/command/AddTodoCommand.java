@@ -27,15 +27,17 @@ public class AddTodoCommand extends Command {
     /**
      * Executes the add todo command by creating and adding a ToDo task.
      *
-     * @param tasks TaskList to add to.
-     * @param ui User interface for showing messages.
+     * @param tasks   TaskList to add to.
+     * @param ui      User interface for showing messages.
      * @param storage Storage to save the task list.
+     * @return
      * @throws IOException If storage save fails.
      */
     @Override
-    public void execute(TaskList tasks, Ui ui, Storage storage) throws IOException {
+    public String execute(TaskList tasks, Ui ui, Storage storage) throws IOException {
         Task newTask = new ToDo(description);
         tasks.addTask(newTask);
         ui.showAddTask(newTask, tasks.size());
+        return null;
     }
 }

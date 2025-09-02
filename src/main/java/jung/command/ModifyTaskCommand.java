@@ -30,14 +30,15 @@ public class ModifyTaskCommand extends Command {
     /**
      * Executes the modify command by performing the specified action on the task.
      *
-     * @param tasks TaskList containing tasks.
-     * @param ui User interface for user messages.
+     * @param tasks   TaskList containing tasks.
+     * @param ui      User interface for user messages.
      * @param storage Storage to save changes.
+     * @return
      * @throws JungException If invalid action or index.
-     * @throws IOException If storage save fails.
+     * @throws IOException   If storage save fails.
      */
     @Override
-    public void execute(TaskList tasks, Ui ui, Storage storage) throws JungException, IOException {
+    public String execute(TaskList tasks, Ui ui, Storage storage) throws JungException, IOException {
         switch (action) {
         case "mark":
             Task marked = tasks.markTask(index);
@@ -57,6 +58,7 @@ public class ModifyTaskCommand extends Command {
         default:
             throw new JungException("Unknown action: " + action);
         }
+        return null;
     }
 }
 

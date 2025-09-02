@@ -9,7 +9,7 @@ import jung.storage.TaskList;
 
 public abstract class Command {
 
-    public abstract void execute(TaskList tasks, Ui ui, Storage storage) throws JungException, IOException;
+    public abstract String execute(TaskList tasks, Ui ui, Storage storage) throws JungException, IOException;
 
     public boolean isExit() {
         return false;
