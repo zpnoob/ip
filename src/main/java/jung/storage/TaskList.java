@@ -3,7 +3,7 @@ package jung.storage;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import jung.JungException;
+import jung.exceptions.JungException;
 import jung.task.Task;
 
 /**

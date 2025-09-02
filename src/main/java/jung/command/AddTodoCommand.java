@@ -2,7 +2,7 @@ package jung.command;
 
 import java.io.IOException;
 
-import jung.Ui;
+import jung.gui.Ui;
 import jung.storage.Storage;
 import jung.storage.TaskList;
 import jung.task.Task;

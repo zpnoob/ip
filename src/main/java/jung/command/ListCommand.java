@@ -1,6 +1,6 @@
 package jung.command;
 
-import jung.Ui;
+import jung.gui.Ui;
 import jung.storage.Storage;
 import jung.storage.TaskList;
 
