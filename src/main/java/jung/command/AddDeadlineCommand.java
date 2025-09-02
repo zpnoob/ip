@@ -51,12 +51,12 @@ public class AddDeadlineCommand extends Command {
             LocalDateTime by = LocalDateTime.parse(byStr, formatter);
             Task newTask = new Deadline(description, by);
             tasks.addTask(newTask);
-            ui.showAddTask(newTask, tasks.size());
+            return "Okay. I've added this task:\n  " + newTask + "\nYou now have "
+                    + tasks.size() + " tasks in the list.";
         } catch (DateTimeParseException e) {
             throw new JungException("Invalid date/time format. " +
                     "Please use d/M/yyyy HHmm.");
         }
-        return null;
     }
 }
 

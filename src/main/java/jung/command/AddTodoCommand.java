@@ -37,7 +37,7 @@ public class AddTodoCommand extends Command {
     public String execute(TaskList tasks, Ui ui, Storage storage) throws IOException {
         Task newTask = new ToDo(description);
         tasks.addTask(newTask);
-        ui.showAddTask(newTask, tasks.size());
-        return null;
+        return "Okay. I've added this task:\n  " + newTask + "\nYou now have "
+                + tasks.size() + " tasks in the list.";
     }
 }
