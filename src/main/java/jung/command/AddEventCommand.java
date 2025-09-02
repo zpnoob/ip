@@ -41,10 +41,10 @@ public class AddEventCommand extends Command {
             LocalDateTime to = LocalDateTime.parse(toStr, formatter);
             Task newTask = new Event(description, from, to);
             tasks.addTask(newTask);
-            ui.showAddTask(newTask, tasks.size());
+            return "Okay. I've added this task:\n  " + newTask + "\nYou now have "
+                    + tasks.size() + " tasks in the list.";
         } catch (DateTimeParseException e) {
             throw new JungException("Invalid date/time format. Please use d/M/yyyy HHmm.");
         }
-        return null;
     }
 }

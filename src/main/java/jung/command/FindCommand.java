@@ -23,8 +23,14 @@ public class FindCommand extends Command{
     public String execute(TaskList tasks, Ui ui, Storage storage) throws
             IOException, JungException {
         ArrayList<Task> matchedTasks = tasks.findTasksByKeyword(keyword);
-        ui.showFind(matchedTasks);
-        return null;
+        if (matchedTasks.isEmpty()) {
+            return "No matching tasks found.";
+        }
+        StringBuilder sb = new StringBuilder("Here are the matching tasks in your list:\n");
+        for (int i = 0; i < matchedTasks.size(); i++) {
+            sb.append((i + 1)).append(". ").append(matchedTasks.get(i)).append("\n");
+        }
+        return sb.toString();
     }
 
 }

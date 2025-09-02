@@ -19,8 +19,7 @@ public class ExitCommand extends Command {
      */
     @Override
     public String execute(TaskList tasks, Ui ui, Storage storage) {
-        System.out.println("Bye. I hope I never see you again..");
-        return null;
+        return "Bye. I hope I never see you again..";
     }
 
     /**

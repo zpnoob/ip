@@ -42,23 +42,19 @@ public class ModifyTaskCommand extends Command {
         switch (action) {
         case "mark":
             Task marked = tasks.markTask(index);
-            ui.showMark(marked);
-            break;
+            return "Lame, this task is marked as done:\n  " + marked;
 
         case "unmark":
             Task unmarked = tasks.unmarkTask(index);
-            ui.showUnmark(unmarked);
-            break;
+            return "I've marked this task as not done yet:\n  " + unmarked;
 
         case "delete":
             Task removed = tasks.deleteTask(index);
-            ui.showDeleteTask(removed, tasks.size());
-            break;
-
+            return "Okay. I've removed this task:\n  " + removed + "\nNow you have "
+                    + tasks.size() + " tasks in the list.";
         default:
             throw new JungException("Unknown action: " + action);
         }
-        return null;
     }
 }
 
