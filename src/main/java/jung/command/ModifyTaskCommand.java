@@ -1,7 +1,6 @@
 package jung.command;
 
 import java.io.IOException;
-
 import jung.exceptions.JungException;
 import jung.gui.Ui;
 import jung.storage.Storage;
@@ -33,7 +32,7 @@ public class ModifyTaskCommand extends Command {
      * @param tasks   TaskList containing tasks.
      * @param ui      User interface for user messages.
      * @param storage Storage to save changes.
-     * @return
+     * @return result message
      * @throws JungException If invalid action or index.
      * @throws IOException   If storage save fails.
      */
@@ -41,20 +40,20 @@ public class ModifyTaskCommand extends Command {
     public String execute(TaskList tasks, Ui ui, Storage storage) throws JungException, IOException {
         switch (action) {
         case "mark":
-            Task marked = tasks.markTask(index);
-            return "Lame, this task is marked as done:\n  " + marked;
-
+            return formatResult("marked as done", tasks.markTask(index));
         case "unmark":
-            Task unmarked = tasks.unmarkTask(index);
-            return "I've marked this task as not done yet:\n  " + unmarked;
-
+            return formatResult("marked as not done yet", tasks.unmarkTask(index));
         case "delete":
-            Task removed = tasks.deleteTask(index);
-            return "Okay. I've removed this task:\n  " + removed + "\nNow you have "
+            Task deletedTask = tasks.deleteTask(index);
+            return formatResult("removed", deletedTask) + "\nNow you have "
                     + tasks.size() + " tasks in the list.";
         default:
             throw new JungException("Unknown action: " + action);
         }
+    }
+
+    public String formatResult (String actionDescription, Task task) {
+        return "Lame. I've " + actionDescription + " this task:\n " + task;
     }
 }
 

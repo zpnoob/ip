@@ -40,7 +40,7 @@ public class AddDeadlineCommand extends Command {
      * @param tasks   TaskList to add the task into.
      * @param ui      Ui interface for user interactions.
      * @param storage Storage to persist tasks.
-     * @return
+     * @return result message
      * @throws IOException   If saving tasks fails.
      * @throws JungException If date/time parsing fails.
      */

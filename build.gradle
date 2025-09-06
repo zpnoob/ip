@@ -46,7 +46,7 @@ test {
 }
 
 application {
-    mainClass = 'jung.Jung'
+    mainClass = 'jung.gui.Jung'
 }
 
 shadowJar {
