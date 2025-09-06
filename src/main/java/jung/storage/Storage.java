@@ -45,6 +45,8 @@ public class Storage {
      * @throws IOException If reading file fails.
      */
     public ArrayList<Task> load() throws IOException {
+        assert filePath != null : "File path must be set";
+
         ArrayList<Task> tasks = new ArrayList<>();
         List<String> lines = Files.readAllLines(filePath);
 

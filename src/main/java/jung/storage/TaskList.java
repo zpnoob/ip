@@ -119,9 +119,12 @@ public class TaskList {
     }
 
     private void validateIndex(int index) throws JungException {
+        assert index >= 0 : "Index should not be negative";
+        assert tasks != null : "Tasks list should be initialized";
+        assert index < tasks.size() : "Index should be less than the number of tasks";
         if (index < 0 || index >= tasks.size()) {
-            throw new JungException("Invalid task number, please enter " +
-                    "a valid number.");
+            throw new JungException("Invalid task number, " +
+                    "please enter a valid number.");
         }
     }
 }
