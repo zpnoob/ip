@@ -25,10 +25,18 @@ public class Parser {
 
     public static Command parse(String input) throws JungException {
         String trimmedInput = input.trim();
+
+        assert trimmedInput != null : "Input should not be null";
+        assert !trimmedInput.isEmpty(): "Input should not be empty";
+
         if (trimmedInput.isEmpty()) {
             throw new JungException("Input cannot be empty.");
         }
+
         String commandWord = getFirstWord(trimmedInput).toLowerCase();
+        assert commandWord != null &&
+                !commandWord.isEmpty() : "Command word cannot be null or empty";
+
         switch (commandWord) {
         case "bye":
             return new ExitCommand();

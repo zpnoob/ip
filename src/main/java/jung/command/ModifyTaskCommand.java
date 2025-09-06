@@ -38,6 +38,10 @@ public class ModifyTaskCommand extends Command {
      */
     @Override
     public String execute(TaskList tasks, Ui ui, Storage storage) throws JungException, IOException {
+        assert action.equals("mark") || action.equals("unmark") || action.equals("delete") :
+                "Action must be mark, unmark, or delete";
+        assert index >= 0 : "Index should not be negative";
+
         switch (action) {
         case "mark":
             return formatResult("marked as done", tasks.markTask(index));
