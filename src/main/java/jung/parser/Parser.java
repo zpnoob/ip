@@ -61,9 +61,6 @@ public class Parser {
 
     /**
      * Helper method to get the first word in a string.
-     *
-     * @param text Input string.
-     * @return The first word.
      */
     private static String getFirstWord(String text) {
         int spaceIndex = text.indexOf(" ");
@@ -73,6 +70,13 @@ public class Parser {
         return text.substring(0, spaceIndex);
     }
 
+    /**
+     * Parses a 'todo' command input string, extracting the description.
+     *
+     * @param input The full todo command input string.
+     * @return An AddTodoCommand object initialized with the extracted description.
+     * @throws JungException If the todo description is empty.
+     */
     private static Command parseTodoCommand(String input) throws JungException {
         String desc = input.substring(4).trim();
         if (desc.isEmpty()) {
@@ -81,6 +85,13 @@ public class Parser {
         return new AddTodoCommand(desc);
     }
 
+    /**
+     * Parses a 'deadline' command input string, extracting the description and deadline time.
+     *
+     * @param input The full deadline command input string.
+     * @return An AddDeadlineCommand object initialized with the description and datetime.
+     * @throws JungException If the input format is invalid or required fields are missing.
+     */
     private static Command parseDeadlineCommand(String input) throws JungException {
         int byIndex = input.indexOf("/by");
         if (byIndex == -1) {
@@ -94,6 +105,13 @@ public class Parser {
         return new AddDeadlineCommand(desc, by);
     }
 
+    /**
+     * Parses an 'event' command input string, extracting the description and time range.
+     *
+     * @param input The full event command input string.
+     * @return An AddEventCommand object initialized with description, start, and end times.
+     * @throws JungException If the input format is invalid or required fields are missing.
+     */
     private static Command parseEventCommand(String input) throws JungException {
         int fromIndex = input.indexOf("/from");
         int toIndex = input.indexOf("/to");
@@ -109,6 +127,14 @@ public class Parser {
         return new AddEventCommand(desc, from, to);
     }
 
+    /**
+     * Parses commands that modify tasks such as 'mark', 'unmark', or 'delete'.
+     *
+     * @param action The action string representing the command type.
+     * @param input The full command input string.
+     * @return A ModifyTaskCommand object initialized with action and task index.
+     * @throws JungException If the task number is missing or invalid.
+     */
     private static Command parseModifyCommand(String action, String input) throws JungException {
         String arg = input.substring(action.length()).trim();
         if (arg.isEmpty()) {
@@ -123,6 +149,13 @@ public class Parser {
         return new ModifyTaskCommand(action, index);
     }
 
+    /**
+     * Parses a 'find' command input string, extracting the keyword to search.
+     *
+     * @param input The full find command input string.
+     * @return A FindCommand object initialized with the extracted search keyword.
+     * @throws JungException If the find keyword is missing.
+     */
     private static Command parseFindCommand(String input) throws JungException {
         String keyword = input.substring(4).trim();
         if (keyword.isEmpty()) {
