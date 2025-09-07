@@ -9,6 +9,7 @@ import jung.command.ExitCommand;
 import jung.command.FindCommand;
 import jung.command.ListCommand;
 import jung.command.ModifyTaskCommand;
+import jung.command.UndoCommand;
 
 /**
  * Parser to parse user input strings into Command objects.
@@ -26,16 +27,10 @@ public class Parser {
     public static Command parse(String input) throws JungException {
         String trimmedInput = input.trim();
 
-        assert trimmedInput != null : "Input should not be null";
         assert !trimmedInput.isEmpty(): "Input should not be empty";
 
-        if (trimmedInput.isEmpty()) {
-            throw new JungException("Input cannot be empty.");
-        }
-
         String commandWord = getFirstWord(trimmedInput).toLowerCase();
-        assert commandWord != null &&
-                !commandWord.isEmpty() : "Command word cannot be null or empty";
+        assert !commandWord.isEmpty() : "Command word cannot be null or empty";
 
         switch (commandWord) {
         case "bye":
@@ -54,6 +49,8 @@ public class Parser {
             return parseModifyCommand(commandWord, trimmedInput);
         case "find":
             return parseFindCommand(trimmedInput);
+        case "undo":
+            return new UndoCommand();
         default:
             throw new JungException("Sorry, I don't recognise that command.");
         }
