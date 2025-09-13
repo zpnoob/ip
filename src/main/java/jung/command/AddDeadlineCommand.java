@@ -1,62 +1,46 @@
 package jung.command;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-
 import jung.exceptions.JungException;
-import jung.gui.Ui;
-import jung.storage.Storage;
-import jung.storage.TaskList;
 import jung.task.Deadline;
 import jung.task.Task;
+import jung.util.DateFormats;
+import jung.util.ErrorMessages;
 
 /**
- * Adds a deadline task to the task list.
- * Parses the date/time string and creates a Deadline task.
+ * Command to add a deadline task with a specific due date and time.
+ * This helps users track tasks that must be completed by a certain deadline.
  */
-public class AddDeadlineCommand extends Command {
+public class AddDeadlineCommand extends AddTaskCommand {
 
-    private String description;
-    private String byStr;
-    private static final DateTimeFormatter formatter =
-            DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
+    private final String taskDescription;
+    private final String deadlineTimeString;
 
     /**
-     * Constructor for AddDeadlineCommand.
+     * Creates a command to add a deadline task.
      *
-     * @param description Task description.
-     * @param byStr Deadline date/time in "d/M/yyyy HHmm" format.
+     * @param taskDescription What needs to be accomplished
+     * @param deadlineTimeString When it must be completed (in d/M/yyyy HHmm format)
      */
-    public AddDeadlineCommand(String description, String byStr) {
-        this.description = description;
-        this.byStr = byStr;
+    public AddDeadlineCommand(String taskDescription, String deadlineTimeString) {
+        this.taskDescription = taskDescription;
+        this.deadlineTimeString = deadlineTimeString;
     }
 
     /**
-     * Executes the add deadline command by creating a Deadline task and adding it.
+     * Creates a new Deadline task by parsing the deadline time string.
      *
-     * @param tasks   TaskList to add the task into.
-     * @param ui      Ui interface for user interactions.
-     * @param storage Storage to persist tasks.
-     * @return result message
-     * @throws IOException   If saving tasks fails.
-     * @throws JungException If date/time parsing fails.
+     * @return A new Deadline task instance
+     * @throws JungException If the deadline time format is invalid
      */
     @Override
-    public String execute(TaskList tasks, Ui ui, Storage storage) throws
-            IOException, JungException {
+    protected Task createTask() throws JungException {
         try {
-            LocalDateTime by = LocalDateTime.parse(byStr, formatter);
-            Task newTask = new Deadline(description, by);
-            tasks.addTask(newTask);
-            return "Okay. I've added this task:\n  " + newTask + "\nYou now have "
-                    + tasks.size() + " tasks in the list.";
+            LocalDateTime deadlineTime = LocalDateTime.parse(deadlineTimeString, DateFormats.INPUT_FORMAT);
+            return new Deadline(taskDescription, deadlineTime);
         } catch (DateTimeParseException e) {
-            throw new JungException("Invalid date/time format. " +
-                    "Please use d/M/yyyy HHmm.");
+            throw new JungException(ErrorMessages.INVALID_DATE_FORMAT);
         }
     }
 }
-

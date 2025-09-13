@@ -3,35 +3,89 @@ package jung.storage;
 import java.nio.file.*;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.*;
-
+import java.util.List;
 import jung.task.Deadline;
 import jung.task.Event;
 import jung.task.Task;
 import jung.task.ToDo;
+import jung.util.DateFormats;
+import jung.util.TaskType;
 
 /**
- * Handles reading from and writing to the tasks data file.
+ * Handles persistent storage of tasks to and from the file system.
+ * Manages file creation, data serialization, and task reconstruction.
  */
 public class Storage {
 
-    private final Path filePath;
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
+    private static final String FILE_DELIMITER = " \\| ";
+    private static final int MINIMUM_PARTS = 3;
+    private static final int TYPE_INDEX = 0;
+    private static final int DONE_FLAG_INDEX = 1;
+    private static final int DESCRIPTION_INDEX = 2;
+    private static final int DEADLINE_TIME_INDEX = 3;
+    private static final int EVENT_START_TIME_INDEX = 3;
+    private static final int EVENT_END_TIME_INDEX = 4;
+    private static final String DONE_FLAG = "1";
 
-    private static final String TASK_TYPE_TODO = "T";
-    private static final String TASK_TYPE_DEADLINE = "D";
-    private static final String TASK_TYPE_EVENT = "E";
+    private final Path filePath;
 
     /**
-     * Creates a Storage handler for the given file path.
+     * Creates a storage handler for the specified file path.
+     * Automatically creates the file and parent directories if they don't exist.
      *
-     * @param filePathStr Path to the data file.
-     * @throws IOException If file or directory creation fails.
+     * @param filePathString Path to the data storage file
+     * @throws IOException If file or directory creation fails
      */
-    public Storage(String filePathStr) throws IOException {
-        this.filePath = Paths.get(filePathStr);
+    public Storage(String filePathString) throws IOException {
+        this.filePath = Paths.get(filePathString);
+        ensureFileExists();
+    }
+
+    /**
+     * Loads all tasks from the storage file.
+     *
+     * @return List of tasks loaded from persistent storage
+     * @throws IOException If file reading fails
+     */
+    public ArrayList<Task> load() throws IOException {
+        ArrayList<Task> tasks = new ArrayList<>();
+        List<String> fileLines = Files.readAllLines(filePath);
+
+        for (String line : fileLines) {
+            Task task = parseTaskFromLine(line);
+            if (task != null) {
+                tasks.add(task);
+            }
+        }
+
+        return tasks;
+    }
+
+    /**
+     * Saves all tasks to the storage file.
+     * Completely replaces the existing file content.
+     *
+     * @param tasks List of tasks to persist to storage
+     * @throws IOException If file writing fails
+     */
+    public void save(ArrayList<Task> tasks) throws IOException {
+        List<String> fileLines = new ArrayList<>();
+
+        for (Task task : tasks) {
+            fileLines.add(task.toFileString());
+        }
+
+        Files.write(filePath, fileLines);
+    }
+
+    /**
+     * Ensures the storage file and its parent directories exist.
+     * Creates them if they don't already exist.
+     *
+     * @throws IOException If file or directory creation fails
+     */
+    private void ensureFileExists() throws IOException {
         if (!Files.exists(filePath)) {
             Files.createDirectories(filePath.getParent());
             Files.createFile(filePath);
@@ -39,75 +93,59 @@ public class Storage {
     }
 
     /**
-     * Loads tasks from the data file and returns a list of tasks.
+     * Parses a single line from the storage file into a Task object.
      *
-     * @return List of tasks loaded from file.
-     * @throws IOException If reading file fails.
+     * @param line Line from the storage file
+     * @return Parsed Task object, or null if parsing fails
      */
-    public ArrayList<Task> load() throws IOException {
-        assert filePath != null : "File path must be set";
+    private Task parseTaskFromLine(String line) {
+        String[] parts = line.split(FILE_DELIMITER);
 
-        ArrayList<Task> tasks = new ArrayList<>();
-        List<String> lines = Files.readAllLines(filePath);
-
-        for (String line : lines) {
-            Task task = parseTaskLines(line);
-            if (task != null) {
-                tasks.add(task);
-            }
+        if (parts.length < MINIMUM_PARTS) {
+            return null; // Invalid format
         }
-        return tasks;
-    }
 
-    private Task parseTaskLines(String line) {
-        String[] parts = line.split(" \\| ");
-        if (parts.length < 3) {
-            return null;
-        }
-        String type = parts[0];
-        String doneFlag = parts[1];
-        String desc = parts[2];
-        Task task;
         try {
-            switch (type) {
-            case TASK_TYPE_TODO:
-                task = new ToDo(desc);
-                break;
-            case TASK_TYPE_DEADLINE:
-                LocalDateTime deadlineDate = LocalDateTime.parse(parts[3], DATE_TIME_FORMATTER);
-                task = new Deadline(desc, deadlineDate);
-                break;
-            case TASK_TYPE_EVENT:
-                LocalDateTime fromDate = LocalDateTime.parse(parts[3], DATE_TIME_FORMATTER);
-                LocalDateTime toDate = LocalDateTime.parse(parts[4], DATE_TIME_FORMATTER);
-                task = new Event(desc, fromDate, toDate);
-                break;
-            default:
-                return null; // unknown task type
-            }
-            if ("1".equals(doneFlag)) {
+            TaskType taskType = TaskType.fromSymbol(parts[TYPE_INDEX].charAt(0));
+            boolean isCompleted = DONE_FLAG.equals(parts[DONE_FLAG_INDEX]);
+            String description = parts[DESCRIPTION_INDEX];
+
+            Task task = createTaskByType(taskType, description, parts);
+
+            if (isCompleted) {
                 task.markAsDone();
             }
+
+            return task;
+
         } catch (Exception e) {
-            return null;
+            return null; // Skip corrupted lines
         }
-        return task;
     }
 
     /**
-     * Saves the list of tasks to the data file.
+     * Creates the appropriate task type based on the parsed data.
      *
-     * @param tasks List of tasks to save.
-     * @throws IOException If writing to file fails.
+     * @param taskType The type of task to create
+     * @param description The task description
+     * @param parts All parsed parts from the file line
+     * @return Created task instance
+     * @throws Exception If task creation fails
      */
-    public void save(ArrayList<Task> tasks) throws IOException {
-        List<String> lines = new ArrayList<>();
-        for (Task t : tasks) {
-            lines.add(t.toFileString());
+    private Task createTaskByType(TaskType taskType, String description, String[] parts) throws Exception {
+        switch (taskType) {
+        case TODO:
+            return new ToDo(description);
+        case DEADLINE:
+            LocalDateTime deadlineTime = LocalDateTime.parse(parts[DEADLINE_TIME_INDEX], DateFormats.INPUT_FORMAT);
+            return new Deadline(description, deadlineTime);
+        case EVENT:
+            LocalDateTime startTime = LocalDateTime.parse(parts[EVENT_START_TIME_INDEX], DateFormats.INPUT_FORMAT);
+            LocalDateTime endTime = LocalDateTime.parse(parts[EVENT_END_TIME_INDEX], DateFormats.INPUT_FORMAT);
+            return new Event(description, startTime, endTime);
+        default:
+            throw new IllegalArgumentException("Unknown task type: " + taskType);
         }
-        Files.write(filePath, lines);
-        // write content of the lines list to file at filePath, replacing what is in there
     }
-
 }
 

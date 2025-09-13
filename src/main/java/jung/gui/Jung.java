@@ -2,94 +2,146 @@ package jung.gui;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
 import jung.exceptions.JungException;
 import jung.command.Command;
 import jung.parser.Parser;
 import jung.storage.Storage;
 import jung.storage.TaskList;
+import jung.util.CommandResult;
 
-
+/**
+ * Core application class that manages task operations and coordinates between
+ * the parser, storage, and task list components.
+ */
 public class Jung {
 
-    private static TaskList taskList;
-    private static Storage storage;
-    private static boolean initialized = false;
+    private static final String WELCOME_MESSAGE = "Hello! I'm Jung.\nI don't really want to help but bopes, what can I do for you today?";
+    private static final String STORAGE_PATH = "data/jung.txt";
+    private static final String LOAD_FAILURE_MESSAGE = "Failed to load tasks, starting with an empty list.";
 
-    public static void main(String[] args) throws IOException {
-        Ui ui = new Ui();
-        //Ui() will scan inputs instead
-        storage = new Storage("data/jung.txt");
+    private TaskList taskList;
+    private Storage storage;
+    private boolean initialized = false;
 
-        try {
-            taskList = new TaskList(storage.load(), storage);
-            // Load what has already been in storage
-        } catch (IOException e) {
-            System.out.println("Failed to load tasks, starting with an empty list.");
-            taskList = new TaskList(new ArrayList<>(), storage);
-            // Initialises an empty list if no data/jung.txt in storage
+    /**
+     * Initializes the Jung application with storage and task list.
+     *
+     * @return Initialization message (welcome or error message)
+     * @throws IOException If storage setup fails
+     */
+    public String initialize() throws IOException {
+        if (initialized) {
+            return "";
         }
 
-        System.out.println("Hello! I'm Jung.");
-        System.out.println("I don't really want to help but bopes, " +
-                "what can I do for you today?\n");
+        setupStorage();
+        String initializationMessage = setupTaskList();
+        initialized = true;
 
-        boolean exit = false;
+        return initializationMessage;
+    }
 
-        while (!exit) {
+    /**
+     * Processes a user command and returns the result.
+     * Automatically initializes if not already done.
+     *
+     * @param input User command string
+     * @return Result of command execution
+     * @throws JungException If command parsing or execution fails
+     * @throws IOException If storage operations fail
+     */
+    public CommandResult processCommand(String input) throws JungException, IOException {
+        ensureInitialized();
+
+        Command command = Parser.parse(input);
+        return command.execute(taskList, null, storage);
+    }
+
+    /**
+     * Gets the welcome message for new users.
+     *
+     * @return Welcome message string
+     */
+    public String getWelcomeMessage() {
+        return WELCOME_MESSAGE;
+    }
+
+    /**
+     * Gets the current task list (for GUI access).
+     *
+     * @return The task list instance
+     */
+    public TaskList getTaskList() {
+        return taskList;
+    }
+
+    /**
+     * Gets the storage instance (for GUI access).
+     *
+     * @return The storage instance
+     */
+    public Storage getStorage() {
+        return storage;
+    }
+
+    // ============= PRIVATE HELPER METHODS =============
+
+    /**
+     * Ensures the application is initialized before processing commands.
+     */
+    private void ensureInitialized() throws IOException {
+        if (!initialized) {
+            initialize();
+        }
+    }
+
+    /**
+     * Sets up the storage system.
+     */
+    private void setupStorage() throws IOException {
+        storage = new Storage(STORAGE_PATH);
+    }
+
+    /**
+     * Sets up the task list by loading existing tasks or creating an empty list.
+     *
+     * @return Initialization message (empty string on success, error message on failure)
+     */
+    private String setupTaskList() {
+        try {
+            ArrayList<jung.task.Task> loadedTasks = storage.load();
+            taskList = new TaskList(loadedTasks, storage);
+            return ""; // Success - no message needed
+        } catch (IOException e) {
+            taskList = new TaskList(new ArrayList<>(), storage);
+            return LOAD_FAILURE_MESSAGE;
+        }
+    }
+
+    // ============= LEGACY MAIN METHOD FOR CONSOLE VERSION =============
+
+    /**
+     * Legacy main method for console-based interaction.
+     * The GUI version should be preferred for better user experience.
+     */
+    public static void main(String[] args) throws IOException {
+        Jung jung = new Jung();
+        System.out.println(jung.initialize());
+
+        Ui ui = new Ui();
+        boolean shouldExit = false;
+
+        while (!shouldExit) {
             String input = ui.readCommand();
             try {
-                Command command = Parser.parse(input);
-                String result = command.execute(taskList, null, storage);
-                System.out.println(result);
-                exit = command.isExit();
+                CommandResult result = jung.processCommand(input);
+                System.out.println(result.getMessage());
+                shouldExit = result.shouldExit();
             } catch (JungException | IOException e) {
                 System.out.println("Oops! " + e.getMessage());
             }
         }
     }
-
-    public static String initialize() throws IOException {
-        if (initialized) return "";
-
-        storage = new Storage("data/jung.txt");
-        try {
-            taskList = new TaskList(storage.load(), storage);
-        } catch (IOException e) {
-            taskList = new TaskList(new ArrayList<>(), storage);
-            initialized = true;
-            return "Failed to load tasks, starting with an empty lists.";
-        }
-        initialized = true;
-        return "Hello! I'm Jung.\nI don't really want to help but bopes, " +
-                "what can I do for you today?";
-    }
-
-    public static String getResponse(String input) {
-        try {
-            if (!initialized) {
-                initialize();
-            }
-            Command command = Parser.parse(input);
-            return command.execute(taskList, null, storage);
-        } catch (JungException | IOException e) {
-            return "Oops! " + e.getMessage();
-        }
-    }
-
-    public static TaskList getTaskList() {
-        return taskList;
-    }
-
-    public static Storage getStorage() {
-        return storage;
-    }
-
-    public String getWelcomeMessage() {
-        return "Hello! I'm Jung.\nI don't really want to help but bopes, what can I do for you today?";
-    }
-
-
 }
 
 

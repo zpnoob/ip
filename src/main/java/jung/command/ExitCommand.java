@@ -3,29 +3,34 @@ package jung.command;
 import jung.gui.Ui;
 import jung.storage.Storage;
 import jung.storage.TaskList;
+import jung.util.CommandResult;
 
 /**
- * Command to exit the application.
+ * Command to gracefully exit the Jung application.
+ * Displays a farewell message before terminating.
  */
 public class ExitCommand extends Command {
 
+    private static final String FAREWELL_MESSAGE = "Bye. I hope I never see you again..";
+
     /**
-     * Executes the exit command, prints farewell message.
+     * Executes the exit command by preparing the farewell message.
+     * The actual application termination is handled by the UI layer.
      *
-     * @param tasks   Not used in ExitCommand.
-     * @param ui      Not used in ExitCommand.
-     * @param storage Not used in ExitCommand.
-     * @return
+     * @param tasks Not used in exit operations
+     * @param ui Not used in exit operations
+     * @param storage Not used in exit operations
+     * @return Result indicating the application should exit
      */
     @Override
-    public String execute(TaskList tasks, Ui ui, Storage storage) {
-        return "Bye. I hope I never see you again..";
+    public CommandResult execute(TaskList tasks, Ui ui, Storage storage) {
+        return new CommandResult(FAREWELL_MESSAGE, true);
     }
 
     /**
-     * Returns true to indicate this command exits the application.
+     * Indicates that this command terminates the application.
      *
-     * @return true
+     * @return true to signal application exit
      */
     @Override
     public boolean isExit() {

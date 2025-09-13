@@ -1,165 +1,228 @@
 package jung.parser;
 
 import jung.exceptions.JungException;
-import jung.command.AddDeadlineCommand;
-import jung.command.AddEventCommand;
-import jung.command.AddTodoCommand;
-import jung.command.Command;
-import jung.command.ExitCommand;
-import jung.command.FindCommand;
-import jung.command.ListCommand;
-import jung.command.ModifyTaskCommand;
-import jung.command.UndoCommand;
+import jung.command.*;
+import jung.util.ErrorMessages;
 
 /**
- * Parser to parse user input strings into Command objects.
+ * Parser responsible for converting user input strings into executable Command objects.
+ * Handles command validation, parameter extraction, and command instantiation.
  */
 public class Parser {
 
+    // Command word constants
+    private static final String CMD_BYE = "bye";
+    private static final String CMD_LIST = "list";
+    private static final String CMD_TODO = "todo";
+    private static final String CMD_DEADLINE = "deadline";
+    private static final String CMD_EVENT = "event";
+    private static final String CMD_MARK = "mark";
+    private static final String CMD_UNMARK = "unmark";
+    private static final String CMD_DELETE = "delete";
+    private static final String CMD_FIND = "find";
+    private static final String CMD_UNDO = "undo";
+
+    // Command length constants
+    private static final int TODO_COMMAND_LENGTH = 4;
+    private static final int DEADLINE_COMMAND_LENGTH = 8;
+    private static final int EVENT_COMMAND_LENGTH = 5;
+    private static final int FIND_COMMAND_LENGTH = 4;
+
+    // Keyword constants
+    private static final String DEADLINE_KEYWORD = "/by";
+    private static final String EVENT_FROM_KEYWORD = "/from";
+    private static final String EVENT_TO_KEYWORD = "/to";
+
     /**
-     * Parses the raw user input into an appropriate Command instance.
+     * Parses user input into an appropriate Command instance.
+     * Follows the happy path: validate input, extract command word, create command.
      *
-     * @param input Raw input string.
-     * @return Parsed Command object.
-     * @throws JungException If input format is invalid or command unknown.
+     * @param input Raw user input string
+     * @return Appropriate Command object ready for execution
+     * @throws JungException If input format is invalid or command is unknown
      */
-
     public static Command parse(String input) throws JungException {
+        validateInput(input);
+
         String trimmedInput = input.trim();
+        String commandWord = extractCommandWord(trimmedInput);
 
-        assert !trimmedInput.isEmpty(): "Input should not be empty";
+        return createCommand(commandWord, trimmedInput);
+    }
 
-        String commandWord = getFirstWord(trimmedInput).toLowerCase();
-        assert !commandWord.isEmpty() : "Command word cannot be null or empty";
+    /**
+     * Validates that user input is not null or empty.
+     *
+     * @param input User input to validate
+     * @throws JungException If input is invalid
+     */
+    private static void validateInput(String input) throws JungException {
+        if (input == null || input.trim().isEmpty()) {
+            throw new JungException(ErrorMessages.EMPTY_INPUT);
+        }
+    }
 
+    /**
+     * Extracts the command word (first word) from user input.
+     *
+     * @param input Trimmed user input
+     * @return The command word in lowercase
+     */
+    private static String extractCommandWord(String input) {
+        int firstSpaceIndex = input.indexOf(" ");
+        if (firstSpaceIndex == -1) {
+            return input.toLowerCase();
+        }
+        return input.substring(0, firstSpaceIndex).toLowerCase();
+    }
+
+    /**
+     * Creates the appropriate Command object based on the command word.
+     *
+     * @param commandWord The parsed command word
+     * @param fullInput The complete user input
+     * @return Command object ready for execution
+     * @throws JungException If command is unknown or has invalid format
+     */
+    private static Command createCommand(String commandWord, String fullInput) throws JungException {
         switch (commandWord) {
-        case "bye":
+        case CMD_BYE:
             return new ExitCommand();
-        case "list":
+        case CMD_LIST:
             return new ListCommand();
-        case "todo":
-            return parseTodoCommand(trimmedInput);
-        case "deadline":
-            return parseDeadlineCommand(trimmedInput);
-        case "event":
-            return parseEventCommand(trimmedInput);
-        case "mark":
-        case "unmark":
-        case "delete":
-            return parseModifyCommand(commandWord, trimmedInput);
-        case "find":
-            return parseFindCommand(trimmedInput);
-        case "undo":
+        case CMD_TODO:
+            return createTodoCommand(fullInput);
+        case CMD_DEADLINE:
+            return createDeadlineCommand(fullInput);
+        case CMD_EVENT:
+            return createEventCommand(fullInput);
+        case CMD_MARK:
+            return createModifyCommand(ModifyTaskCommand.Action.MARK, fullInput);
+        case CMD_UNMARK:
+            return createModifyCommand(ModifyTaskCommand.Action.UNMARK, fullInput);
+        case CMD_DELETE:
+            return createModifyCommand(ModifyTaskCommand.Action.DELETE, fullInput);
+        case CMD_FIND:
+            return createFindCommand(fullInput);
+        case CMD_UNDO:
             return new UndoCommand();
         default:
-            throw new JungException("Sorry, I don't recognise that command.");
+            throw new JungException(ErrorMessages.UNKNOWN_COMMAND);
         }
     }
 
     /**
-     * Helper method to get the first word in a string.
-     */
-    private static String getFirstWord(String text) {
-        int spaceIndex = text.indexOf(" ");
-        if (spaceIndex == -1) {
-            return text;
-        }
-        return text.substring(0, spaceIndex);
-    }
-
-    /**
-     * Parses a 'todo' command input string, extracting the description.
+     * Creates a todo command by extracting the task description.
      *
-     * @param input The full todo command input string.
-     * @return An AddTodoCommand object initialized with the extracted description.
-     * @throws JungException If the todo description is empty.
+     * @param input Full todo command input
+     * @return AddTodoCommand with the task description
+     * @throws JungException If description is empty
      */
-    private static Command parseTodoCommand(String input) throws JungException {
-        String desc = input.substring(4).trim();
-        if (desc.isEmpty()) {
-            throw new JungException("The description of a todo cannot be empty. Try: todo [description]");
+    private static Command createTodoCommand(String input) throws JungException {
+        String taskDescription = input.substring(TODO_COMMAND_LENGTH).trim();
+
+        if (taskDescription.isEmpty()) {
+            throw new JungException(ErrorMessages.EMPTY_TODO_DESCRIPTION);
         }
-        return new AddTodoCommand(desc);
+
+        return new AddTodoCommand(taskDescription);
     }
 
     /**
-     * Parses a 'deadline' command input string, extracting the description and deadline time.
+     * Creates a deadline command by parsing description and deadline time.
      *
-     * @param input The full deadline command input string.
-     * @return An AddDeadlineCommand object initialized with the description and datetime.
-     * @throws JungException If the input format is invalid or required fields are missing.
+     * @param input Full deadline command input
+     * @return AddDeadlineCommand with description and deadline
+     * @throws JungException If format is invalid or fields are missing
      */
-    private static Command parseDeadlineCommand(String input) throws JungException {
-        int byIndex = input.indexOf("/by");
-        if (byIndex == -1) {
-            throw new JungException("Deadline task requires a '/by' date/time. Format: deadline [desc] /by [datetime]");
+    private static Command createDeadlineCommand(String input) throws JungException {
+        int deadlineKeywordIndex = input.indexOf(DEADLINE_KEYWORD);
+
+        if (deadlineKeywordIndex == -1) {
+            throw new JungException(ErrorMessages.MISSING_DEADLINE_DATE);
         }
-        String desc = input.substring(8, byIndex).trim();
-        String by = input.substring(byIndex + 3).trim();
-        if (desc.isEmpty() || by.isEmpty()) {
-            throw new JungException("Deadline description or date/time cannot be empty.");
+
+        String taskDescription = input.substring(DEADLINE_COMMAND_LENGTH, deadlineKeywordIndex).trim();
+        String deadlineTime = input.substring(deadlineKeywordIndex + DEADLINE_KEYWORD.length()).trim();
+
+        if (taskDescription.isEmpty() || deadlineTime.isEmpty()) {
+            throw new JungException(ErrorMessages.EMPTY_DEADLINE_FIELDS);
         }
-        return new AddDeadlineCommand(desc, by);
+
+        return new AddDeadlineCommand(taskDescription, deadlineTime);
     }
 
     /**
-     * Parses an 'event' command input string, extracting the description and time range.
+     * Creates an event command by parsing description, start time, and end time.
      *
-     * @param input The full event command input string.
-     * @return An AddEventCommand object initialized with description, start, and end times.
-     * @throws JungException If the input format is invalid or required fields are missing.
+     * @param input Full event command input
+     * @return AddEventCommand with description and time range
+     * @throws JungException If format is invalid or fields are missing
      */
-    private static Command parseEventCommand(String input) throws JungException {
-        int fromIndex = input.indexOf("/from");
-        int toIndex = input.indexOf("/to");
-        if (fromIndex == -1 || toIndex == -1 || fromIndex > toIndex) {
-            throw new JungException("Event task requires both '/from' and '/to' date/time.");
+    private static Command createEventCommand(String input) throws JungException {
+        int fromKeywordIndex = input.indexOf(EVENT_FROM_KEYWORD);
+        int toKeywordIndex = input.indexOf(EVENT_TO_KEYWORD);
+
+        boolean missingFromKeyword = fromKeywordIndex == -1;
+        boolean missingToKeyword = toKeywordIndex == -1;
+        boolean invalidKeywordOrder = fromKeywordIndex > toKeywordIndex;
+
+        if (missingFromKeyword || missingToKeyword || invalidKeywordOrder) {
+            throw new JungException(ErrorMessages.MISSING_EVENT_DATES);
         }
-        String desc = input.substring(5, fromIndex).trim();
-        String from = input.substring(fromIndex + 5, toIndex).trim();
-        String to = input.substring(toIndex + 3).trim();
-        if (desc.isEmpty() || from.isEmpty() || to.isEmpty()) {
-            throw new JungException("Event description, start, and end date/time cannot be empty.");
+
+        String taskDescription = input.substring(EVENT_COMMAND_LENGTH, fromKeywordIndex).trim();
+        String startTime = input.substring(fromKeywordIndex + EVENT_FROM_KEYWORD.length(), toKeywordIndex).trim();
+        String endTime = input.substring(toKeywordIndex + EVENT_TO_KEYWORD.length()).trim();
+
+        if (taskDescription.isEmpty() || startTime.isEmpty() || endTime.isEmpty()) {
+            throw new JungException(ErrorMessages.EMPTY_EVENT_FIELDS);
         }
-        return new AddEventCommand(desc, from, to);
+
+        return new AddEventCommand(taskDescription, startTime, endTime);
     }
 
     /**
-     * Parses commands that modify tasks such as 'mark', 'unmark', or 'delete'.
+     * Creates a task modification command (mark/unmark/delete) with task number.
      *
-     * @param action The action string representing the command type.
-     * @param input The full command input string.
-     * @return A ModifyTaskCommand object initialized with action and task index.
-     * @throws JungException If the task number is missing or invalid.
+     * @param action The modification action to perform
+     * @param input Full command input
+     * @return ModifyTaskCommand with action and task index
+     * @throws JungException If task number is missing or invalid
      */
-    private static Command parseModifyCommand(String action, String input) throws JungException {
-        String arg = input.substring(action.length()).trim();
-        if (arg.isEmpty()) {
-            throw new JungException(action + " command requires a task number.");
+    private static Command createModifyCommand(ModifyTaskCommand.Action action, String input)
+            throws JungException {
+
+        String actionName = action.name().toLowerCase();
+        String taskNumberString = input.substring(actionName.length()).trim();
+
+        if (taskNumberString.isEmpty()) {
+            throw new JungException(actionName + ErrorMessages.MISSING_TASK_NUMBER);
         }
-        int index;
+
         try {
-            index = Integer.parseInt(arg) - 1;  // zero-based index
+            int taskNumber = Integer.parseInt(taskNumberString);
+            int zeroBasedIndex = taskNumber - 1;
+            return new ModifyTaskCommand(action, zeroBasedIndex);
         } catch (NumberFormatException e) {
-            throw new JungException("Invalid task number format.");
+            throw new JungException(ErrorMessages.INVALID_TASK_NUMBER);
         }
-        return new ModifyTaskCommand(action, index);
     }
 
     /**
-     * Parses a 'find' command input string, extracting the keyword to search.
+     * Creates a find command by extracting the search keyword.
      *
-     * @param input The full find command input string.
-     * @return A FindCommand object initialized with the extracted search keyword.
-     * @throws JungException If the find keyword is missing.
+     * @param input Full find command input
+     * @return FindCommand with the search keyword
+     * @throws JungException If keyword is missing
      */
-    private static Command parseFindCommand(String input) throws JungException {
-        String keyword = input.substring(4).trim();
-        if (keyword.isEmpty()) {
-            throw new JungException("The find command requires a keyword to search.");
+    private static Command createFindCommand(String input) throws JungException {
+        String searchKeyword = input.substring(FIND_COMMAND_LENGTH).trim();
+
+        if (searchKeyword.isEmpty()) {
+            throw new JungException(ErrorMessages.MISSING_FIND_KEYWORD);
         }
-        return new FindCommand(keyword);
+
+        return new FindCommand(searchKeyword);
     }
 }
-
-

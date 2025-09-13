@@ -1,50 +1,50 @@
 package jung.command;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-
 import jung.exceptions.JungException;
-import jung.gui.Ui;
-import jung.storage.Storage;
-import jung.storage.TaskList;
 import jung.task.Event;
 import jung.task.Task;
-/**
- * Command to add an event task with from and to date/time.
- */
-public class AddEventCommand extends Command {
+import jung.util.DateFormats;
+import jung.util.ErrorMessages;
 
-    private String description;
-    private String fromStr;
-    private String toStr;
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
+/**
+ * Command to add an event task with start and end times.
+ * This allows users to track activities that span a specific time period.
+ */
+public class AddEventCommand extends AddTaskCommand {
+
+    private final String taskDescription;
+    private final String startTimeString;
+    private final String endTimeString;
 
     /**
-     * Creates AddEventCommand with description, start, and end date/time.
+     * Creates a command to add an event task.
      *
-     * @param description Description of event.
-     * @param fromStr Start date/time string.
-     * @param toStr End date/time string.
+     * @param taskDescription What the event is about
+     * @param startTimeString When the event begins (in d/M/yyyy HHmm format)
+     * @param endTimeString When the event ends (in d/M/yyyy HHmm format)
      */
-    public AddEventCommand(String description, String fromStr, String toStr) {
-        this.description = description;
-        this.fromStr = fromStr;
-        this.toStr = toStr;
+    public AddEventCommand(String taskDescription, String startTimeString, String endTimeString) {
+        this.taskDescription = taskDescription;
+        this.startTimeString = startTimeString;
+        this.endTimeString = endTimeString;
     }
 
+    /**
+     * Creates a new Event task by parsing the start and end time strings.
+     *
+     * @return A new Event task instance
+     * @throws JungException If either time format is invalid
+     */
     @Override
-    public String execute(TaskList tasks, Ui ui, Storage storage) throws IOException, JungException {
+    protected Task createTask() throws JungException {
         try {
-            LocalDateTime from = LocalDateTime.parse(fromStr, formatter);
-            LocalDateTime to = LocalDateTime.parse(toStr, formatter);
-            Task newTask = new Event(description, from, to);
-            tasks.addTask(newTask);
-            return "Okay. I've added this task:\n  " + newTask + "\nYou now have "
-                    + tasks.size() + " tasks in the list.";
+            LocalDateTime startTime = LocalDateTime.parse(startTimeString, DateFormats.INPUT_FORMAT);
+            LocalDateTime endTime = LocalDateTime.parse(endTimeString, DateFormats.INPUT_FORMAT);
+            return new Event(taskDescription, startTime, endTime);
         } catch (DateTimeParseException e) {
-            throw new JungException("Invalid date/time format. Please use d/M/yyyy HHmm.");
+            throw new JungException(ErrorMessages.INVALID_DATE_FORMAT);
         }
     }
 }

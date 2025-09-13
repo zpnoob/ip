@@ -1,38 +1,72 @@
 package jung.task;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import jung.util.DateFormats;
+import jung.util.TaskType;
 
+/**
+ * Represents an event task that occurs during a specific time period.
+ * These tasks help users track activities with defined start and end times.
+ */
 public class Event extends Task {
-    private LocalDateTime from;
-    private LocalDateTime to;
-    private static final DateTimeFormatter INPUT_FORMAT = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
-    private static final DateTimeFormatter OUTPUT_FORMAT = DateTimeFormatter.ofPattern("d MMM yyyy, h:mm a");
 
-    public Event(String description, LocalDateTime from, LocalDateTime to) {
-        super(description, 'E');
-        this.from = from;
-        this.to = to;
+    private final LocalDateTime startTime;
+    private final LocalDateTime endTime;
+
+    /**
+     * Creates a new event task with description and time period.
+     *
+     * @param description What the event is about
+     * @param startTime When the event begins
+     * @param endTime When the event concludes
+     */
+    public Event(String description, LocalDateTime startTime, LocalDateTime endTime) {
+        super(description, TaskType.EVENT.getSymbol());
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
-    public LocalDateTime getFrom() {
-        return this.from;
+    /**
+     * Gets the start date and time of this event.
+     *
+     * @return When this event begins
+     */
+    public LocalDateTime getStartTime() {
+        return startTime;
     }
 
-    public LocalDateTime getTo() {
-        return this.to;
+    /**
+     * Gets the end date and time of this event.
+     *
+     * @return When this event concludes
+     */
+    public LocalDateTime getEndTime() {
+        return endTime;
     }
 
+    /**
+     * Returns a user-friendly string showing the event and its time period.
+     *
+     * @return Formatted string with start and end times
+     */
     @Override
     public String toString() {
-        return super.toString() + " (from: " + from.format(OUTPUT_FORMAT) +
-                " to: " + to.format(OUTPUT_FORMAT) + ")";
+        String formattedStart = startTime.format(DateFormats.OUTPUT_FORMAT);
+        String formattedEnd = endTime.format(DateFormats.OUTPUT_FORMAT);
+        return super.toString() + " (from: " + formattedStart + " to: " + formattedEnd + ")";
     }
 
+    /**
+     * Converts this event task to file storage format.
+     * Format: "E | [1|0] | description | start_date_time | end_date_time"
+     *
+     * @return String representation for file storage
+     */
     @Override
     public String toFileString() {
-        return "E | " + (isDone() ? "1" : "0") + " | " + getDescription() + " | " + from.format(INPUT_FORMAT) +
-                " | " + to.format(INPUT_FORMAT);
-
+        String completionFlag = isDone() ? "1" : "0";
+        String formattedStart = startTime.format(DateFormats.INPUT_FORMAT);
+        String formattedEnd = endTime.format(DateFormats.INPUT_FORMAT);
+        return String.format("E | %s | %s | %s | %s", completionFlag, getDescription(), formattedStart, formattedEnd);
     }
 }

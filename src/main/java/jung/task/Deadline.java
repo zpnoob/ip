@@ -1,49 +1,58 @@
 package jung.task;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import jung.util.DateFormats;
+import jung.util.TaskType;
 
 /**
- * Represents a Deadline task that has a description and a by-date/time.
+ * Represents a task with a specific deadline for completion.
+ * These tasks help users track what must be done by a certain date and time.
  */
 public class Deadline extends Task {
-    private LocalDateTime by; //field determining when to complete task by
-    private static final DateTimeFormatter INPUT_FORMAT = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
-    private static final DateTimeFormatter OUTPUT_FORMAT = DateTimeFormatter.ofPattern("d MMM yyyy, h:mm a");
+
+    private final LocalDateTime deadlineTime;
 
     /**
-     * Creates a Deadline task with the given description and deadline date/time.
+     * Creates a new deadline task with description and due date/time.
      *
-     * @param description Description of the task.
-     * @param by Deadline date/time.
+     * @param description What needs to be accomplished
+     * @param deadlineTime When the task must be completed by
      */
-    public Deadline(String description, LocalDateTime by) {
-        super(description,  'D');
-        this.by = by;
-    }
-
-    public LocalDateTime getBy() {
-        return this.by;
+    public Deadline(String description, LocalDateTime deadlineTime) {
+        super(description, TaskType.DEADLINE.getSymbol());
+        this.deadlineTime = deadlineTime;
     }
 
     /**
-     * Returns a string representation of the deadline task suitable for user display.
+     * Gets the deadline date and time for this task.
      *
-     * @return Readable string of the task.
+     * @return When this task is due
+     */
+    public LocalDateTime getDeadlineTime() {
+        return deadlineTime;
+    }
+
+    /**
+     * Returns a user-friendly string showing the task and its deadline.
+     *
+     * @return Formatted string with deadline information
      */
     @Override
     public String toString() {
-        return super.toString() + " (by: " + this.by.format(OUTPUT_FORMAT) + ")";
+        String formattedDeadline = deadlineTime.format(DateFormats.OUTPUT_FORMAT);
+        return super.toString() + " (by: " + formattedDeadline + ")";
     }
 
     /**
-     * Returns a string suitable for saving this task to file.
+     * Converts this deadline task to file storage format.
+     * Format: "D | [1|0] | description | deadline_date_time"
      *
-     * @return Formatted string for file storage.
+     * @return String representation for file storage
      */
     @Override
     public String toFileString() {
-        return "D | " + (isDone() ? "1" : "0") + " | "+ getDescription() + " | " +
-                by.format(INPUT_FORMAT);
+        String completionFlag = isDone() ? "1" : "0";
+        String formattedDeadline = deadlineTime.format(DateFormats.INPUT_FORMAT);
+        return String.format("D | %s | %s | %s", completionFlag, getDescription(), formattedDeadline);
     }
 }

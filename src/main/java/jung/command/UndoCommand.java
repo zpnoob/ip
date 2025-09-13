@@ -6,28 +6,38 @@ import jung.gui.Ui;
 import jung.storage.Storage;
 import jung.storage.TaskList;
 import jung.storage.UndoableAction;
+import jung.util.CommandResult;
+import jung.util.ErrorMessages;
 
-public class UndoCommand extends Command{
+/**
+ * Command to reverse the most recent undoable operation.
+ * Provides users with the ability to correct mistakes in task management.
+ */
+public class UndoCommand extends Command {
+
     /**
-     * Executes the undo command by reverting the most recent undoable operation.
+     * Executes the undo operation by reversing the most recent undoable command.
      *
-     * @param tasks   TaskList to perform undo operation on.
-     * @param ui      User interface for displaying messages.
-     * @param storage Storage to save changes after undo.
-     * @return Result message indicating what was undone.
-     * @throws JungException If no command can be undone.
-     * @throws IOException   If storage save fails.
+     * @param tasks TaskList to perform undo operation on
+     * @param ui User interface for messages (not used directly)
+     * @param storage Storage system to persist changes after undo
+     * @return Result indicating what operation was undone
+     * @throws JungException If no command is available to undo
+     * @throws IOException If storage operations fail
      */
     @Override
-    public String execute(TaskList tasks, Ui ui, Storage storage) throws JungException, IOException {
+    public CommandResult execute(TaskList tasks, Ui ui, Storage storage)
+            throws JungException, IOException {
+
         UndoableAction lastAction = tasks.getLastAction();
         if (lastAction == null) {
-            throw new JungException("No command to undo.");
+            throw new JungException(ErrorMessages.NO_COMMAND_TO_UNDO);
         }
 
-        String result = lastAction.executeUndo(tasks);
-        tasks.clearLastAction(); // Clear the undo action after using it
-        storage.save(tasks.getTasks()); // Save the changes
-        return result;
+        String undoResult = lastAction.executeUndo(tasks);
+        tasks.clearLastAction();
+        storage.save(tasks.getTasks());
+
+        return new CommandResult(undoResult);
     }
 }

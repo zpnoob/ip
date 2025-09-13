@@ -1,43 +1,34 @@
 package jung.command;
 
-import java.io.IOException;
-
-import jung.gui.Ui;
-import jung.storage.Storage;
-import jung.storage.TaskList;
+import jung.exceptions.JungException;
 import jung.task.Task;
 import jung.task.ToDo;
 
 /**
- * Command to add a ToDo task to the task list.
+ * Command to add a simple todo task without deadlines or time constraints.
+ * This allows users to track basic tasks that need to be completed.
  */
-public class AddTodoCommand extends Command {
+public class AddTodoCommand extends AddTaskCommand {
 
-    private String description;
+    private final String taskDescription;
 
     /**
-     * Creates an AddTodoCommand with the ToDo task description.
+     * Creates a command to add a todo task with the given description.
      *
-     * @param description Description of the ToDo task.
+     * @param taskDescription What the user needs to do
      */
-    public AddTodoCommand(String description) {
-        this.description = description;
+    public AddTodoCommand(String taskDescription) {
+        this.taskDescription = taskDescription;
     }
 
     /**
-     * Executes the add todo command by creating and adding a ToDo task.
+     * Creates a new Todo task with the provided description.
      *
-     * @param tasks   TaskList to add to.
-     * @param ui      User interface for showing messages.
-     * @param storage Storage to save the task list.
-     * @return
-     * @throws IOException If storage save fails.
+     * @return A new Todo task instance
+     * @throws JungException This implementation doesn't throw exceptions
      */
     @Override
-    public String execute(TaskList tasks, Ui ui, Storage storage) throws IOException {
-        Task newTask = new ToDo(description);
-        tasks.addTask(newTask);
-        return "Okay. I've added this task:\n  " + newTask + "\nYou now have "
-                + tasks.size() + " tasks in the list.";
+    protected Task createTask() throws JungException {
+        return new ToDo(taskDescription);
     }
 }
