@@ -22,7 +22,7 @@ public class ErrorMessages {
     public static final String INVALID_TASK_NUMBER = "Eh that's not a proper number lah! " +
             "Give me real task number can?";
     public static final String MISSING_FIND_KEYWORD = "Find what sia? You never say what to search for!";
-    public static final String UNKNOWN_COMMAND = "Ha? I don't understand what you saying leh. " +
+    public static final String UNKNOWN_COMMAND = "Huh? I don't understand what you saying leh. " +
             "Type 'list' to see your tasks or try other commands!";
     public static final String INVALID_TASK_INDEX = "That task number doesn't exist lah! " +
             "Check your list first, then try again.";
