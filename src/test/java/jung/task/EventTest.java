@@ -40,6 +40,41 @@ public class EventTest {
         assertEquals(expected, event.toString());
     }
 
+    @Test
+    public void getStartTime_returnsCorrectStartTime() {
+        LocalDateTime start = LocalDateTime.of(2025, 8, 28, 10, 0);
+        LocalDateTime end = LocalDateTime.of(2025, 8, 28, 12, 0);
+        Event event = new Event("meeting", start, end);
 
+        assertEquals(start, event.getStartTime());
+    }
 
+    @Test
+    public void getEndTime_returnsCorrectEndTime() {
+        LocalDateTime start = LocalDateTime.of(2025, 8, 28, 10, 0);
+        LocalDateTime end = LocalDateTime.of(2025, 8, 28, 12, 0);
+        Event event = new Event("meeting", start, end);
+
+        assertEquals(end, event.getEndTime());
+    }
+
+    @Test
+    public void getTaskSymbol_returnsESymbol() {
+        LocalDateTime start = LocalDateTime.of(2025, 8, 28, 10, 0);
+        LocalDateTime end = LocalDateTime.of(2025, 8, 28, 12, 0);
+        Event event = new Event("meeting", start, end);
+
+        assertEquals('E', event.getTaskSymbol());
+    }
+
+    @Test
+    public void markAsDone_changesStatusCorrectly() {
+        LocalDateTime start = LocalDateTime.of(2025, 8, 28, 10, 0);
+        LocalDateTime end = LocalDateTime.of(2025, 8, 28, 12, 0);
+        Event event = new Event("meeting", start, end);
+
+        assertFalse(event.isDone());
+        event.markAsDone();
+        assertTrue(event.isDone());
+    }
 }

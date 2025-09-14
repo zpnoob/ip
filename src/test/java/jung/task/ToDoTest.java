@@ -39,5 +39,37 @@ public class ToDoTest {
         String expected = "[T][X] walk the dog";
         assertEquals(expected, todo.toString());
     }
+
+    @Test
+    public void markAsDone_initiallyIncomplete_becomesComplete() {
+        ToDo todo = new ToDo("test task");
+        assertFalse(todo.isDone());
+
+        todo.markAsDone();
+        assertTrue(todo.isDone());
+        assertEquals("X", todo.getStatusIcon());
+    }
+
+    @Test
+    public void markAsNotDone_initiallyComplete_becomesIncomplete() {
+        ToDo todo = new ToDo("test task");
+        todo.markAsDone();
+
+        todo.markAsNotDone();
+        assertFalse(todo.isDone());
+        assertEquals(" ", todo.getStatusIcon());
+    }
+
+    @Test
+    public void getDescription_returnsCorrectDescription() {
+        ToDo todo = new ToDo("my task");
+        assertEquals("my task", todo.getDescription());
+    }
+
+    @Test
+    public void getTaskSymbol_returnsTSymbol() {
+        ToDo todo = new ToDo("test");
+        assertEquals('T', todo.getTaskSymbol());
+    }
 }
 
