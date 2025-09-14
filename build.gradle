@@ -46,13 +46,24 @@ test {
 }
 
 application {
-    mainClass = 'jung.gui.Jung'
+    mainClass = 'jung.Launcher'
 }
 
 shadowJar {
     archiveBaseName = "jung"
     archiveClassifier = null
 }
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
 
 run{
     standardInput = System.in
