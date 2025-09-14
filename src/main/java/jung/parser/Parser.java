@@ -60,6 +60,14 @@ public class Parser {
         if (input == null || input.trim().isEmpty()) {
             throw new JungException(ErrorMessages.EMPTY_INPUT);
         }
+
+        if (input.length() > 500) {
+            throw new JungException("Wah, your command too long liao! Keep it shorter can?");
+        }
+
+        if (input.contains(" | ") && !input.trim().toLowerCase().startsWith("find")) {
+            throw new JungException("Cannot use ' | ' in your command lah! It's reserved!");
+        }
     }
 
     /**
@@ -69,13 +77,13 @@ public class Parser {
      * @return The command word in lowercase
      */
     private static String extractCommandWord(String input) {
-        int firstSpaceIndex = input.indexOf(" ");
+        String normalized = input.trim().replaceAll("\\s+", " ");
+        int firstSpaceIndex = normalized.indexOf(" ");
         if (firstSpaceIndex == -1) {
-            return input.toLowerCase();
+            return normalized.toLowerCase();
         }
-        return input.substring(0, firstSpaceIndex).toLowerCase();
+        return normalized.substring(0, firstSpaceIndex).toLowerCase();
     }
-
     /**
      * Creates the appropriate Command object based on the command word.
      *
@@ -119,12 +127,15 @@ public class Parser {
      * @throws JungException If description is empty
      */
     private static Command createTodoCommand(String input) throws JungException {
-        String taskDescription = input.substring(TODO_COMMAND_LENGTH).trim();
+        String normalized = input.trim().replaceAll("\\s+", " ");
+        String taskDescription = normalized.substring(TODO_COMMAND_LENGTH).trim();
 
         if (taskDescription.isEmpty()) {
             throw new JungException(ErrorMessages.EMPTY_TODO_DESCRIPTION);
         }
-
+        if (taskDescription.length() > 200) {
+            throw new JungException("Your task description too long lah! Keep it under 200 characters!");
+        }
         return new AddTodoCommand(taskDescription);
     }
 
@@ -136,17 +147,22 @@ public class Parser {
      * @throws JungException If format is invalid or fields are missing
      */
     private static Command createDeadlineCommand(String input) throws JungException {
-        int deadlineKeywordIndex = input.indexOf(DEADLINE_KEYWORD);
+        String normalized = input.trim().replaceAll("\\s+", " ");
+        int deadlineKeywordIndex = normalized.indexOf(DEADLINE_KEYWORD);
 
         if (deadlineKeywordIndex == -1) {
             throw new JungException(ErrorMessages.MISSING_DEADLINE_DATE);
         }
 
-        String taskDescription = input.substring(DEADLINE_COMMAND_LENGTH, deadlineKeywordIndex).trim();
-        String deadlineTime = input.substring(deadlineKeywordIndex + DEADLINE_KEYWORD.length()).trim();
+        String taskDescription = normalized.substring(DEADLINE_COMMAND_LENGTH, deadlineKeywordIndex).trim();
+        String deadlineTime = normalized.substring(deadlineKeywordIndex + DEADLINE_KEYWORD.length()).trim();
 
         if (taskDescription.isEmpty() || deadlineTime.isEmpty()) {
             throw new JungException(ErrorMessages.EMPTY_DEADLINE_FIELDS);
+        }
+
+        if (taskDescription.length() > 200) {
+            throw new JungException("Your task description too long lah! Keep it shorter!");
         }
 
         return new AddDeadlineCommand(taskDescription, deadlineTime);
@@ -160,8 +176,9 @@ public class Parser {
      * @throws JungException If format is invalid or fields are missing
      */
     private static Command createEventCommand(String input) throws JungException {
-        int fromKeywordIndex = input.indexOf(EVENT_FROM_KEYWORD);
-        int toKeywordIndex = input.indexOf(EVENT_TO_KEYWORD);
+        String normalized = input.trim().replaceAll("\\s+", " ");
+        int fromKeywordIndex = normalized.indexOf(EVENT_FROM_KEYWORD);
+        int toKeywordIndex = normalized.indexOf(EVENT_TO_KEYWORD);
 
         boolean missingFromKeyword = fromKeywordIndex == -1;
         boolean missingToKeyword = toKeywordIndex == -1;
@@ -171,12 +188,17 @@ public class Parser {
             throw new JungException(ErrorMessages.MISSING_EVENT_DATES);
         }
 
-        String taskDescription = input.substring(EVENT_COMMAND_LENGTH, fromKeywordIndex).trim();
-        String startTime = input.substring(fromKeywordIndex + EVENT_FROM_KEYWORD.length(), toKeywordIndex).trim();
-        String endTime = input.substring(toKeywordIndex + EVENT_TO_KEYWORD.length()).trim();
+        String taskDescription = normalized.substring(EVENT_COMMAND_LENGTH, fromKeywordIndex).trim();
+        String startTime = normalized.substring(fromKeywordIndex + EVENT_FROM_KEYWORD.length(), toKeywordIndex).trim();
+        String endTime = normalized.substring(toKeywordIndex + EVENT_TO_KEYWORD.length()).trim();
+
 
         if (taskDescription.isEmpty() || startTime.isEmpty() || endTime.isEmpty()) {
             throw new JungException(ErrorMessages.EMPTY_EVENT_FIELDS);
+        }
+
+        if (taskDescription.length() > 200) {
+            throw new JungException("Your task description too long lah! Keep it shorter!");
         }
 
         return new AddEventCommand(taskDescription, startTime, endTime);
