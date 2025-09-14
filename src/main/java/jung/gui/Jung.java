@@ -24,7 +24,7 @@ public class Jung {
 
     private TaskList taskList;
     private Storage storage;
-    private boolean initialized = false;
+    private boolean isInitialized = false;
 
     /**
      * Initializes the Jung application with storage and task list.
@@ -33,13 +33,13 @@ public class Jung {
      * @throws IOException If storage setup fails
      */
     public String initialize() throws IOException {
-        if (initialized) {
+        if (isInitialized) {
             return "";
         }
 
         setupStorage();
         String initializationMessage = setupTaskList();
-        initialized = true;
+        isInitialized = true;
 
         return initializationMessage;
     }
@@ -91,7 +91,7 @@ public class Jung {
      * Ensures the application is initialized before processing commands.
      */
     private void ensureInitialized() throws IOException {
-        if (!initialized) {
+        if (!isInitialized) {
             initialize();
         }
     }
