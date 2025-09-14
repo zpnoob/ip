@@ -15,9 +15,12 @@ import jung.util.CommandResult;
  */
 public class Jung {
 
-    private static final String WELCOME_MESSAGE = "Hello! I'm Jung.\nI don't really want to help but bopes, what can I do for you today?";
+    private static final String WELCOME_MESSAGE = "Wah, hello! I'm Jung.\n" +
+            "Aiyo, I don't really want to help but... sian, what you want me to do for you today?\n" +
+            "Just don't give me too much work can or not? 😤";
     private static final String STORAGE_PATH = "data/jung.txt";
-    private static final String LOAD_FAILURE_MESSAGE = "Failed to load tasks, starting with an empty list.";
+    private static final String LOAD_FAILURE_MESSAGE = "Wah lau eh, cannot load your tasks leh. " +
+            "Never mind, start fresh lor!";
 
     private TaskList taskList;
     private Storage storage;
@@ -48,7 +51,7 @@ public class Jung {
      * @param input User command string
      * @return Result of command execution
      * @throws JungException If command parsing or execution fails
-     * @throws IOException If storage operations fail
+     * @throws IOException   If storage operations fail
      */
     public CommandResult processCommand(String input) throws JungException, IOException {
         ensureInitialized();
@@ -84,8 +87,6 @@ public class Jung {
         return storage;
     }
 
-    // ============= PRIVATE HELPER METHODS =============
-
     /**
      * Ensures the application is initialized before processing commands.
      */
@@ -115,31 +116,6 @@ public class Jung {
         } catch (IOException e) {
             taskList = new TaskList(new ArrayList<>(), storage);
             return LOAD_FAILURE_MESSAGE;
-        }
-    }
-
-    // ============= LEGACY MAIN METHOD FOR CONSOLE VERSION =============
-
-    /**
-     * Legacy main method for console-based interaction.
-     * The GUI version should be preferred for better user experience.
-     */
-    public static void main(String[] args) throws IOException {
-        Jung jung = new Jung();
-        System.out.println(jung.initialize());
-
-        Ui ui = new Ui();
-        boolean shouldExit = false;
-
-        while (!shouldExit) {
-            String input = ui.readCommand();
-            try {
-                CommandResult result = jung.processCommand(input);
-                System.out.println(result.getMessage());
-                shouldExit = result.shouldExit();
-            } catch (JungException | IOException e) {
-                System.out.println("Oops! " + e.getMessage());
-            }
         }
     }
 }

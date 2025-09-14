@@ -13,9 +13,19 @@ import jung.util.CommandResult;
  */
 public class FindCommand extends Command {
 
-    private static final String NO_MATCHES_MESSAGE = "No matching tasks found.";
-    private static final String MATCHES_HEADER = "Here are the matching tasks in your list:\n";
+    private static final String[] NO_MATCHES_MESSAGES = {
+            "Eh cannot find anything matching leh! Try different keyword?",
+            "No such thing in your list lah! Sure or not you got this task?",
+            "Cannot find anything sia. Maybe you spell wrong?",
+            "Your search got no results. Try again with different words!"
+    };
 
+    private static final String[] MATCHES_HEADERS = {
+            "Found some tasks that match your search:",
+            "Here are the tasks I found for you:",
+            "Wah got some matches leh:",
+            "These tasks match what you looking for:"
+    };
     private final String searchKeyword;
 
     /**
@@ -40,7 +50,8 @@ public class FindCommand extends Command {
         ArrayList<Task> matchedTasks = tasks.findTasksByKeyword(searchKeyword);
 
         if (matchedTasks.isEmpty()) {
-            return new CommandResult(NO_MATCHES_MESSAGE);
+            String message = getRandomMessage(NO_MATCHES_MESSAGES);
+            return new CommandResult(message);
         }
 
         String formattedResults = formatSearchResults(matchedTasks);
@@ -54,7 +65,8 @@ public class FindCommand extends Command {
      * @return Formatted string with numbered results
      */
     private String formatSearchResults(ArrayList<Task> matchedTasks) {
-        StringBuilder resultsBuilder = new StringBuilder(MATCHES_HEADER);
+        StringBuilder resultsBuilder = new StringBuilder(getRandomMessage(MATCHES_HEADERS));
+        resultsBuilder.append("\n");
 
         for (int i = 0; i < matchedTasks.size(); i++) {
             int resultNumber = i + 1;
@@ -62,5 +74,10 @@ public class FindCommand extends Command {
         }
 
         return resultsBuilder.toString();
+    }
+
+    private String getRandomMessage(String[] messages) {
+        int randomIndex = (int) (Math.random() * messages.length);
+        return messages[randomIndex];
     }
 }

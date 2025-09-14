@@ -14,6 +14,13 @@ import jung.util.CommandResult;
  */
 public abstract class AddTaskCommand extends Command {
 
+    private static final String[] ADD_RESPONSES = {
+            "Aiya okay lah, I help you add this task:",
+            "Haiz, another one ah? Fine lor, added:",
+            "Wah, you very productive today hor? Added:",
+            "Sian... okay okay, I add for you:",
+            "Bo bian, since you ask nicely, added:"
+    };
     /**
      * Creates the specific task instance based on the command parameters.
      * Subclasses implement this to create Todo, Deadline, or Event tasks.
@@ -49,8 +56,40 @@ public abstract class AddTaskCommand extends Command {
      * @param totalTasks The total number of tasks after addition
      * @return Formatted success message
      */
+    /**
+     * Formats a Singaporean-style response message for successful task addition.
+     *
+     * @param task The task that was added
+     * @param totalTasks The total number of tasks after addition
+     * @return Formatted success message with local flair
+     */
     private String formatAddTaskResponse(Task task, int totalTasks) {
-        return String.format("Okay. I've added this task:\n  %s\nYou now have %d tasks in the list.",
-                task, totalTasks);
+        String response = getRandomResponse();
+        String taskCountMessage = getTaskCountMessage(totalTasks);
+
+        return String.format("%s\n  %s\n%s", response, task, taskCountMessage);
+    }
+
+    /**
+     * Gets a random Singaporean response for task addition.
+     */
+    private String getRandomResponse() {
+        int randomIndex = (int) (Math.random() * ADD_RESPONSES.length);
+        return ADD_RESPONSES[randomIndex];
+    }
+
+    /**
+     * Gets an appropriate task count message based on the number of tasks.
+     */
+    private String getTaskCountMessage(int totalTasks) {
+        if (totalTasks == 1) {
+            return "Now you got 1 task only. Not bad ah, still manageable.";
+        } else if (totalTasks <= 5) {
+            return String.format("Now you got %d tasks. Still okay lah.", totalTasks);
+        } else if (totalTasks <= 10) {
+            return String.format("Wah, now you got %d tasks liao. Getting busy hor?", totalTasks);
+        } else {
+            return String.format("Aiyo, %d tasks already?! You very busy person ah! 😅", totalTasks);
+        }
     }
 }

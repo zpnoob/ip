@@ -11,7 +11,7 @@ import jung.util.CommandResult;
  */
 public class ExitCommand extends Command {
 
-    private static final String FAREWELL_MESSAGE = "Bye. I hope I never see you again..";
+    private static final String FAREWELL_MESSAGE = "Bye bye! Don't miss me too much ah!";
 
     /**
      * Executes the exit command by preparing the farewell message.

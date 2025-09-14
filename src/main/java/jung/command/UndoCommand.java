@@ -15,15 +15,22 @@ import jung.util.ErrorMessages;
  */
 public class UndoCommand extends Command {
 
+    private static final String[] UNDO_SUCCESS_RESPONSES = {
+            "Okay lah, I help you undo that mistake:",
+            "Aiya, change your mind again ah? Fine, undone:",
+            "Cannot make up your mind is it? Okay, reversed:",
+            "Haiz, undo for you already:"
+    };
+
     /**
      * Executes the undo operation by reversing the most recent undoable command.
      *
-     * @param tasks TaskList to perform undo operation on
-     * @param ui User interface for messages (not used directly)
+     * @param tasks   TaskList to perform undo operation on
+     * @param ui      User interface for messages (not used directly)
      * @param storage Storage system to persist changes after undo
      * @return Result indicating what operation was undone
      * @throws JungException If no command is available to undo
-     * @throws IOException If storage operations fail
+     * @throws IOException   If storage operations fail
      */
     @Override
     public CommandResult execute(TaskList tasks, Ui ui, Storage storage)
@@ -38,6 +45,15 @@ public class UndoCommand extends Command {
         tasks.clearLastAction();
         storage.save(tasks.getTasks());
 
-        return new CommandResult(undoResult);
+        String response = getRandomResponse() + "\n" + undoResult;
+        return new CommandResult(response);
+    }
+
+    /**
+     * Gets a random Singaporean response for successful undo operations.
+     */
+    private String getRandomResponse() {
+        int randomIndex = (int) (Math.random() * UNDO_SUCCESS_RESPONSES.length);
+        return UNDO_SUCCESS_RESPONSES[randomIndex];
     }
 }
