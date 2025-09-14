@@ -1,0 +1,105 @@
+/* Jung Task Manager - Singapore Theme CSS */
+/* Safe CSS that won't conflict with JavaFX internals */
+
+.root {
+    -fx-base: #ffffff;
+    -fx-background-color: #f8f9fa;
+    -fx-font-family: 'Segoe UI', system-ui, sans-serif;
+    -fx-font-size: 13px;
+}
+
+/* Input Field Styling */
+.text-field {
+    -fx-background-color: white;
+    -fx-border-color: #ced4da;
+    -fx-border-width: 1.5px;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-padding: 12px 16px;
+    -fx-font-size: 14px;
+    -fx-prompt-text-fill: #6c757d;
+    -fx-text-fill: #495057;
+}
+
+.text-field:focused {
+    -fx-border-color: #ed1c24;
+    -fx-background-color: #ffffff;
+}
+
+.text-field.error {
+    -fx-border-color: #dc3545;
+    -fx-background-color: #fff8f8;
+}
+
+/* Button Styling - Singapore Red Theme */
+.send-button {
+    -fx-background-color: #ed1c24;
+    -fx-text-fill: white;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-padding: 12px 24px;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.send-button:hover {
+    -fx-background-color: #c41e3a;
+}
+
+.send-button:pressed {
+    -fx-background-color: #a01729;
+}
+
+.send-button:disabled {
+    -fx-background-color: #6c757d;
+    -fx-text-fill: rgba(255, 255, 255, 0.7);
+}
+
+/* Dialog Container */
+.dialog-container {
+    -fx-spacing: 12px;
+    -fx-padding: 20px;
+    -fx-background-color: transparent;
+}
+
+/* Dialog Box Styling */
+.dialog-box {
+    -fx-background-color: white;
+    -fx-background-radius: 12px;
+    -fx-padding: 16px;
+    -fx-spacing: 12px;
+    -fx-alignment: center-left;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 1px;
+    -fx-border-radius: 12px;
+}
+
+.dialog-box.error {
+    -fx-background-color: #fff5f5;
+    -fx-border-color: #ff6b6b;
+}
+
+.dialog-box .label {
+    -fx-font-family: 'Segoe UI', system-ui, sans-serif;
+    -fx-font-size: 14px;
+    -fx-wrap-text: true;
+    -fx-text-fill: #2c3e50;
+}
+
+.dialog-box.error .label {
+    -fx-text-fill: #d32f2f;
+    -fx-font-weight: bold;
+}
+
+/* Scroll Pane - Minimal styling to avoid conflicts */
+.scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .content {
+    -fx-background-color: transparent;
+}
