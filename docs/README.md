@@ -214,7 +214,6 @@ Output: Aiyo! Start time cannot be later than end time lah!
 + If the data file is corrupted, Jung will skip the corrupted entries and inform you.
 
 ## FAQ
-## FAQ
 
 **Q: Can I edit the data file directly?**  
 A: Jung task data are saved as a text file at `[JAR file location]/data/jung.txt`. Advanced users are welcome to update data directly by editing that file, but be careful with the format!
